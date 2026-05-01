@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { createDatabase } from "../src/client.ts";
 import { withShopScope } from "../src/rls.ts";
 
-const url = process.env.DATABASE_URL ?? "postgres://postgres:postgres@localhost:5432/aidey";
+const url = process.env.DATABASE_URL ?? "postgres://postgres:postgres@localhost:5433/aidey";
 
 describe("withShopScope", () => {
   test("sets app.shop_id within the transaction", async () => {
