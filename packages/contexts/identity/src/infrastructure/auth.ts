@@ -31,6 +31,7 @@ export function createAuth(config: AuthConfig) {
     database: drizzleAdapter(config.db, { provider: "pg", schema }),
     secret: config.secret,
     baseURL: config.baseURL,
+    basePath: "/auth",
     trustedOrigins: [config.webURL],
     plugins: [
       magicLink({
