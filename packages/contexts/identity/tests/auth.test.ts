@@ -19,21 +19,28 @@ afterAll(async () => {
   // postgres-js connections close on process exit; nothing to do
 });
 
-describe("codeFromToken (pure)", () => {
-  test("derives last-6-hex → mod 1e6 → zero-padded", () => {
-    expect(codeFromToken("abcdef0123456789abcdef000000")).toBe("000000");
-    expect(codeFromToken("deadbeefcafe000001")).toBe(
-      (0x000001 % 1_000_000).toString().padStart(6, "0"),
-    );
-    expect(codeFromToken("ffffffffffffff")).toBe(
-      (0xffffff % 1_000_000).toString().padStart(6, "0"),
-    );
+describe("codeFromToken", () => {
+  test("returns a 6-digit numeric string", () => {
+    expect(codeFromToken("anything-goes-here")).toMatch(/^\d{6}$/);
+    expect(codeFromToken("SfNNVXKBtKBZzZmIPUhalutAASLIwLgE")).toMatch(/^\d{6}$/);
+    expect(codeFromToken("")).toMatch(/^\d{6}$/);
+  });
+
+  test("is deterministic — same token always yields same code", () => {
+    const token = "SfNNVXKBtKBZzZmIPUhalutAASLIwLgE";
+    expect(codeFromToken(token)).toBe(codeFromToken(token));
+  });
+
+  test("different tokens generally yield different codes", () => {
+    // Not a guarantee (collision space is 1M), but two arbitrary tokens shouldn't collide here
+    expect(codeFromToken("token-a")).not.toBe(codeFromToken("token-b"));
   });
 });
 
 describe("tokenFromCode (DB)", () => {
   test("returns the active token whose derived code matches", async () => {
-    const token = "abcdef0123456789abcdef000000";
+    const token = "SfNNVXKBtKBZzZmIPUhalutAASLIwLgE";
+    const expectedCode = codeFromToken(token);
     await db.insert(schema.verification).values({
       id: "tk-1",
       identifier: "magic-link",
@@ -41,18 +48,19 @@ describe("tokenFromCode (DB)", () => {
       expiresAt: new Date(Date.now() + 10 * 60_000),
     });
 
-    const result = await tokenFromCode(db, "000000");
+    const result = await tokenFromCode(db, expectedCode);
     expect(result).toBe(token);
   });
 
   test("returns null for expired tokens", async () => {
+    const token = "expired-token-abcdef";
+    const code = codeFromToken(token);
     await db.insert(schema.verification).values({
       id: "tk-2",
       identifier: "magic-link",
-      value: "deadbeefcafe000001",
+      value: token,
       expiresAt: new Date(Date.now() - 1000),
     });
-    const code = (0x000001 % 1_000_000).toString().padStart(6, "0");
     const result = await tokenFromCode(db, code);
     expect(result).toBeNull();
   });

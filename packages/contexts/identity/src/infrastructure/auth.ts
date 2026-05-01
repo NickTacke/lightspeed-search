@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { Database } from "@aidey/database";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -15,14 +16,14 @@ export interface AuthConfig {
 }
 
 /**
- * Derive a 6-digit numeric code from a magic-link token.
- * Last 6 hex chars of the token, parsed as int, mod 1_000_000, zero-padded to 6 digits.
- * Same algorithm used both when sending and when looking up.
+ * Derive a deterministic 6-digit numeric code from a token.
+ * Uses sha256 hex digest → take last 6 hex chars → parse as int → mod 1_000_000 → zero-pad.
+ * Works for any token format (Better Auth uses alphanumeric, not hex).
  */
 export function codeFromToken(token: string): string {
-  const tail = token.slice(-6);
+  const digest = createHash("sha256").update(token).digest("hex");
+  const tail = digest.slice(-6);
   const n = Number.parseInt(tail, 16);
-  if (!Number.isFinite(n)) return "000000";
   return (n % 1_000_000).toString().padStart(6, "0");
 }
 
