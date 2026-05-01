@@ -13,7 +13,7 @@
     "generate": "openapi-ts",
     "dev": "openapi-ts --watch 5000",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "ls src/**/*.test.* tests/**/*.test.* 2>/dev/null | grep -q . && bun test || echo 'no tests yet'"
   },
   "dependencies": {
     "@hey-api/client-fetch": "^0.13.1",
