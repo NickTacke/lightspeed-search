@@ -99,6 +99,13 @@
         "drizzle-kit": "^0.31.10",
       },
     },
+    "packages/lightspeed": {
+      "name": "@aidey/lightspeed",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
+      },
+    },
     "packages/tsconfig": {
       "name": "@aidey/tsconfig",
       "version": "0.0.0",
@@ -114,6 +121,8 @@
     "@aidey/database": ["@aidey/database@workspace:packages/database"],
 
     "@aidey/identity": ["@aidey/identity@workspace:packages/contexts/identity"],
+
+    "@aidey/lightspeed": ["@aidey/lightspeed@workspace:packages/lightspeed"],
 
     "@aidey/tsconfig": ["@aidey/tsconfig@workspace:packages/tsconfig"],
 
