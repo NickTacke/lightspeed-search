@@ -3,6 +3,11 @@ pre-commit:
   commands:
     biome:
       glob: "*.{ts,tsx,js,jsx,json}"
+      exclude:
+        - "**/generated/**"
+        - "**/route-tree.gen.ts"
+        - "**/routeTree.gen.ts"
+        - "**/openapi.json"
       run: "bunx biome check --write {staged_files}"
       stage_fixed: true
     typecheck:
