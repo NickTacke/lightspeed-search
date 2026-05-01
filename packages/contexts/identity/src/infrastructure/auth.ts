@@ -3,7 +3,6 @@ import type { Database } from "@aidey/database";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { magicLink } from "better-auth/plugins";
-import { eq } from "drizzle-orm";
 import type { EmailSender } from "./email-sender.ts";
 import * as schema from "./schema.ts";
 
@@ -61,20 +60,24 @@ export type Auth = ReturnType<typeof createAuth>;
 /**
  * Find the active magic-link token whose 6-digit derived code matches `code`.
  * Used by the /auth/verify-code endpoint added in Task 4.5.
+ *
+ * Better Auth's magic-link plugin stores rows as:
+ *   identifier = the token (random string)
+ *   value      = JSON metadata like '{"email":"...","attempt":0}'
+ * So we scan recent unexpired rows and match by hashing each `identifier`.
  */
 export async function tokenFromCode(db: Database, code: string): Promise<string | null> {
+  const now = new Date();
   const rows = await db
     .select({
-      value: schema.verification.value,
+      identifier: schema.verification.identifier,
       expiresAt: schema.verification.expiresAt,
     })
-    .from(schema.verification)
-    .where(eq(schema.verification.identifier, "magic-link"));
+    .from(schema.verification);
 
-  const now = new Date();
   for (const row of rows) {
     if (row.expiresAt < now) continue;
-    if (codeFromToken(row.value) === code) return row.value;
+    if (codeFromToken(row.identifier) === code) return row.identifier;
   }
   return null;
 }

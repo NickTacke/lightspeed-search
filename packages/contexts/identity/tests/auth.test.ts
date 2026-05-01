@@ -12,7 +12,11 @@ beforeAll(() => {
 });
 
 afterEach(async () => {
-  await db.delete(schema.verification).where(eq(schema.verification.identifier, "magic-link"));
+  // Clean up the rows inserted by the tests below (identifier = the token itself,
+  // matching how Better Auth's magic-link plugin actually stores rows).
+  for (const id of ["SfNNVXKBtKBZzZmIPUhalutAASLIwLgE", "expired-token-abcdef"]) {
+    await db.delete(schema.verification).where(eq(schema.verification.identifier, id));
+  }
 });
 
 afterAll(async () => {
@@ -43,8 +47,8 @@ describe("tokenFromCode (DB)", () => {
     const expectedCode = codeFromToken(token);
     await db.insert(schema.verification).values({
       id: "tk-1",
-      identifier: "magic-link",
-      value: token,
+      identifier: token,
+      value: JSON.stringify({ email: "user@example.com", attempt: 0 }),
       expiresAt: new Date(Date.now() + 10 * 60_000),
     });
 
@@ -57,8 +61,8 @@ describe("tokenFromCode (DB)", () => {
     const code = codeFromToken(token);
     await db.insert(schema.verification).values({
       id: "tk-2",
-      identifier: "magic-link",
-      value: token,
+      identifier: token,
+      value: JSON.stringify({ email: "user@example.com", attempt: 0 }),
       expiresAt: new Date(Date.now() - 1000),
     });
     const result = await tokenFromCode(db, code);
