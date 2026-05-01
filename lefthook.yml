@@ -8,6 +8,7 @@ pre-commit:
         - "**/route-tree.gen.ts"
         - "**/routeTree.gen.ts"
         - "**/openapi.json"
+        - "packages/database/migrations/**"
       run: "bunx biome check --write {staged_files}"
       stage_fixed: true
     typecheck:
