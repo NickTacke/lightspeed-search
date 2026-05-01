@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getApiHealth, getApiShops, type Options, postApiShopsOnboardManual } from '../sdk.gen';
-import type { GetApiHealthData, GetApiHealthResponse, GetApiShopsData, GetApiShopsResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse } from '../types.gen';
+import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiShops, type Options, patchApiAlertsById, postApiAlerts, postApiShopsOnboardManual } from '../sdk.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiShopsData, GetApiShopsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -73,6 +73,78 @@ export const postApiShopsOnboardManualMutation = (options?: Partial<Options<Post
     const mutationOptions: UseMutationOptions<PostApiShopsOnboardManualResponse, DefaultError, Options<PostApiShopsOnboardManualData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await postApiShopsOnboardManual({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getApiAlertsQueryKey = (options?: Options<GetApiAlertsData>) => createQueryKey('getApiAlerts', options);
+
+export const getApiAlertsOptions = (options?: Options<GetApiAlertsData>) => queryOptions<GetApiAlertsResponse, DefaultError, GetApiAlertsResponse, ReturnType<typeof getApiAlertsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiAlerts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiAlertsQueryKey(options)
+});
+
+export const postApiAlertsMutation = (options?: Partial<Options<PostApiAlertsData>>): UseMutationOptions<PostApiAlertsResponse, DefaultError, Options<PostApiAlertsData>> => {
+    const mutationOptions: UseMutationOptions<PostApiAlertsResponse, DefaultError, Options<PostApiAlertsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await postApiAlerts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const deleteApiAlertsByIdMutation = (options?: Partial<Options<DeleteApiAlertsByIdData>>): UseMutationOptions<DeleteApiAlertsByIdResponse, DefaultError, Options<DeleteApiAlertsByIdData>> => {
+    const mutationOptions: UseMutationOptions<DeleteApiAlertsByIdResponse, DefaultError, Options<DeleteApiAlertsByIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteApiAlertsById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getApiAlertsByIdQueryKey = (options: Options<GetApiAlertsByIdData>) => createQueryKey('getApiAlertsById', options);
+
+export const getApiAlertsByIdOptions = (options: Options<GetApiAlertsByIdData>) => queryOptions<GetApiAlertsByIdResponse, DefaultError, GetApiAlertsByIdResponse, ReturnType<typeof getApiAlertsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiAlertsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiAlertsByIdQueryKey(options)
+});
+
+export const patchApiAlertsByIdMutation = (options?: Partial<Options<PatchApiAlertsByIdData>>): UseMutationOptions<PatchApiAlertsByIdResponse, DefaultError, Options<PatchApiAlertsByIdData>> => {
+    const mutationOptions: UseMutationOptions<PatchApiAlertsByIdResponse, DefaultError, Options<PatchApiAlertsByIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await patchApiAlertsById({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

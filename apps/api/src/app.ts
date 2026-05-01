@@ -1,6 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
 import type { Container } from "./container.ts";
+import { alertRoutes } from "./routes/alerts.ts";
 import { authRoutes } from "./routes/auth.ts";
 import { healthRoute } from "./routes/health.ts";
 import { lightspeedRoutes } from "./routes/lightspeed.ts";
@@ -14,6 +15,7 @@ export function buildApp(container: Container) {
 
   app.route("/api", healthRoute());
   app.route("/api/shops", shopRoutes(container));
+  app.route("/api/alerts", alertRoutes(container));
   app.route("/auth", authRoutes(container));
   app.route("/lightspeed", lightspeedRoutes(container));
 
