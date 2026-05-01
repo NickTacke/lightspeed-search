@@ -2,7 +2,11 @@
   "name": "aidey",
   "private": true,
   "type": "module",
-  "workspaces": ["apps/*", "packages/*", "packages/contexts/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/contexts/*"
+  ],
   "scripts": {
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
