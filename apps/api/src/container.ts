@@ -1,5 +1,15 @@
 import { createDatabase } from "@aidey/database";
 import { createAuth, createEmailSender } from "@aidey/identity";
+import {
+  type CreateFromInstallInput,
+  type CreateFromManualKeyInput,
+  createFromInstall,
+  createFromManualKey,
+  createShopRepository,
+  getShop,
+  getShopByDomain,
+  listForUser,
+} from "@aidey/shops";
 import type { Env } from "./env.ts";
 
 export function createContainer(env: Env) {
@@ -17,7 +27,19 @@ export function createContainer(env: Env) {
     secret: env.BETTER_AUTH_SECRET,
     webURL: env.WEB_URL,
   });
-  return { db, env, auth };
+
+  const shopRepo = createShopRepository(db);
+  const shops = {
+    createFromManualKey: (input: CreateFromManualKeyInput) =>
+      createFromManualKey({ repo: shopRepo }, input),
+    createFromInstall: (input: CreateFromInstallInput) =>
+      createFromInstall({ repo: shopRepo }, input),
+    getById: getShop(shopRepo),
+    getByDomain: getShopByDomain(shopRepo),
+    listForUser: listForUser(shopRepo),
+  };
+
+  return { db, env, auth, shops };
 }
 
 export type Container = ReturnType<typeof createContainer>;

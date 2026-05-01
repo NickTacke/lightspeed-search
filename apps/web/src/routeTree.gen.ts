@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicVerifyRouteImport } from './routes/(public)/verify'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
+import { Route as appOnboardingRouteImport } from './routes/(app)/onboarding'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 
 const publicIndexRoute = publicIndexRouteImport.update({
@@ -29,6 +30,11 @@ const publicLoginRoute = publicLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appOnboardingRoute = appOnboardingRouteImport.update({
+  id: '/(app)/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   id: '/(app)/dashboard/',
   path: '/dashboard/',
@@ -36,12 +42,14 @@ const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
   '/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRoutesByTo {
+  '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
@@ -49,6 +57,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(app)/onboarding': typeof appOnboardingRoute
   '/(public)/login': typeof publicLoginRoute
   '/(public)/verify': typeof publicVerifyRoute
   '/(public)/': typeof publicIndexRoute
@@ -56,11 +65,12 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/verify' | '/' | '/dashboard/'
+  fullPaths: '/onboarding' | '/login' | '/verify' | '/' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/verify' | '/' | '/dashboard'
+  to: '/onboarding' | '/login' | '/verify' | '/' | '/dashboard'
   id:
     | '__root__'
+    | '/(app)/onboarding'
     | '/(public)/login'
     | '/(public)/verify'
     | '/(public)/'
@@ -68,6 +78,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  appOnboardingRoute: typeof appOnboardingRoute
   publicLoginRoute: typeof publicLoginRoute
   publicVerifyRoute: typeof publicVerifyRoute
   publicIndexRoute: typeof publicIndexRoute
@@ -97,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/onboarding': {
+      id: '/(app)/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof appOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(app)/dashboard/': {
       id: '/(app)/dashboard/'
       path: '/dashboard'
@@ -108,6 +126,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  appOnboardingRoute: appOnboardingRoute,
   publicLoginRoute: publicLoginRoute,
   publicVerifyRoute: publicVerifyRoute,
   publicIndexRoute: publicIndexRoute,
