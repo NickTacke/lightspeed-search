@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "ls src/**/*.test.* tests/**/*.test.* 2>/dev/null | grep -q . && bun test || echo 'no tests yet'"
+    "test": "find src tests -name '*.test.*' 2>/dev/null | grep -q . && bun test || echo 'no tests yet'"
   },
   "dependencies": {
     "@aidey/api-client": "workspace:*",
