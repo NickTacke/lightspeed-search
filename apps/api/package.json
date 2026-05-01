@@ -13,9 +13,9 @@
   "dependencies": {
     "@aidey/contracts": "workspace:*",
     "@aidey/database": "workspace:*",
-    "hono": "^4.7.0",
-    "@hono/zod-openapi": "^0.18.0",
-    "zod": "^3.23.8"
+    "hono": "^4.12.16",
+    "@hono/zod-openapi": "^1.3.0",
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@aidey/tsconfig": "workspace:*"

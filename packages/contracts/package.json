@@ -15,7 +15,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@aidey/tsconfig": "workspace:*"
