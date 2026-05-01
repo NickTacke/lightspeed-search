@@ -1,7 +1,15 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
   "files": {
-    "ignore": ["**/dist", "**/generated", "**/node_modules", "**/*.css", "**/route-tree.gen.ts", "**/routeTree.gen.ts"]
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/generated",
+      "!**/node_modules",
+      "!**/*.css",
+      "!**/route-tree.gen.ts",
+      "!**/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "indentStyle": "space",
@@ -11,5 +19,11 @@
   "linter": {
     "rules": { "recommended": true }
   },
-  "organizeImports": { "enabled": true }
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
 }
