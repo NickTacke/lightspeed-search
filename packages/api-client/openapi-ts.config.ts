@@ -1,7 +1,7 @@
 import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
-  input: "http://localhost:3001/openapi.json",
+  input: "./openapi.json",
   output: {
     path: "./src/generated",
     format: "biome",
