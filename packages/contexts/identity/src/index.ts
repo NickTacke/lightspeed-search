@@ -1,3 +1,9 @@
 export type { SessionId, UserId } from "./domain/ids.ts";
 export { sessionId, userId } from "./domain/ids.ts";
+export {
+  createEmailSender,
+  type EmailMessage,
+  type EmailSender,
+  type EmailSenderConfig,
+} from "./infrastructure/email-sender.ts";
 export * as schema from "./infrastructure/schema.ts";
