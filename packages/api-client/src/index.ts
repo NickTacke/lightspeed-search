@@ -1,3 +1,3 @@
-export * from "./generated/@tanstack/react-query.gen.ts";
-export { client } from "./generated/client.gen.ts";
-export * from "./generated/index.ts";
+export * from "./generated/@tanstack/react-query.gen";
+export { client } from "./generated/client.gen";
+export * from "./generated/index";
