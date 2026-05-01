@@ -77,6 +77,18 @@
         "@aidey/tsconfig": "workspace:*",
       },
     },
+    "packages/contexts/shops": {
+      "name": "@aidey/shops",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aidey/database": "workspace:*",
+        "@aidey/identity": "workspace:*",
+        "drizzle-orm": "^0.45.2",
+      },
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
+      },
+    },
     "packages/contracts": {
       "name": "@aidey/contracts",
       "version": "0.0.0",
@@ -123,6 +135,8 @@
     "@aidey/identity": ["@aidey/identity@workspace:packages/contexts/identity"],
 
     "@aidey/lightspeed": ["@aidey/lightspeed@workspace:packages/lightspeed"],
+
+    "@aidey/shops": ["@aidey/shops@workspace:packages/contexts/shops"],
 
     "@aidey/tsconfig": ["@aidey/tsconfig@workspace:packages/tsconfig"],
 
