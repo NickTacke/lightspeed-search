@@ -8,7 +8,7 @@
     "packages/contexts/*"
   ],
   "scripts": {
-    "dev": "concurrently -k -n api,web,contracts,client -c cyan,yellow,magenta,green 'bun --filter @aidey/api dev' 'bun --filter @aidey/web dev' 'bun --filter @aidey/contracts dev' 'bun --filter @aidey/api-client dev'",
+    "dev": "concurrently -k -n api,web,contracts,client -c cyan,yellow,magenta,green 'cd apps/api && bun run dev' 'cd apps/web && bun run dev' 'cd packages/contracts && bun run dev' 'cd packages/api-client && bun run dev'",
     "build": "bun --filter '*' build",
     "test": "bun --filter '*' test",
     "typecheck": "bun --filter '*' typecheck",
