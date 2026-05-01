@@ -1,6 +1,13 @@
 export type { SessionId, UserId } from "./domain/ids.ts";
 export { sessionId, userId } from "./domain/ids.ts";
 export {
+  type Auth,
+  type AuthConfig,
+  codeFromToken,
+  createAuth,
+  tokenFromCode,
+} from "./infrastructure/auth.ts";
+export {
   createEmailSender,
   type EmailMessage,
   type EmailSender,
