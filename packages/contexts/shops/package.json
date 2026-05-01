@@ -15,6 +15,7 @@
   "dependencies": {
     "@aidey/database": "workspace:*",
     "@aidey/identity": "workspace:*",
+    "@aidey/lightspeed": "workspace:*",
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {

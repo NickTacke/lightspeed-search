@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApiHealthData, GetApiHealthResponses } from './types.gen';
+import type { GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -19,3 +19,14 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 export const getApiHealth = <ThrowOnError extends boolean = false>(options?: Options<GetApiHealthData, ThrowOnError>) => (options?.client ?? client).get<GetApiHealthResponses, unknown, ThrowOnError>({ url: '/api/health', ...options });
+
+export const getApiShops = <ThrowOnError extends boolean = false>(options?: Options<GetApiShopsData, ThrowOnError>) => (options?.client ?? client).get<GetApiShopsResponses, GetApiShopsErrors, ThrowOnError>({ url: '/api/shops', ...options });
+
+export const postApiShopsOnboardManual = <ThrowOnError extends boolean = false>(options?: Options<PostApiShopsOnboardManualData, ThrowOnError>) => (options?.client ?? client).post<PostApiShopsOnboardManualResponses, PostApiShopsOnboardManualErrors, ThrowOnError>({
+    url: '/api/shops/onboard-manual',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});

@@ -22,3 +22,68 @@ export type GetApiHealthResponses = {
 };
 
 export type GetApiHealthResponse = GetApiHealthResponses[keyof GetApiHealthResponses];
+
+export type GetApiShopsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/shops';
+};
+
+export type GetApiShopsErrors = {
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type GetApiShopsResponses = {
+    /**
+     * list of shops the current user owns
+     */
+    200: Array<{
+        id: string;
+        domain: string;
+        name: string;
+        cluster: 'us1' | 'eu1';
+    }>;
+};
+
+export type GetApiShopsResponse = GetApiShopsResponses[keyof GetApiShopsResponses];
+
+export type PostApiShopsOnboardManualData = {
+    body?: {
+        domain: string;
+        apiKey: string;
+        apiSecret: string;
+        cluster: 'us1' | 'eu1';
+    };
+    path?: never;
+    query?: never;
+    url: '/api/shops/onboard-manual';
+};
+
+export type PostApiShopsOnboardManualErrors = {
+    /**
+     * invalid credentials
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type PostApiShopsOnboardManualResponses = {
+    /**
+     * shop created from manual API key
+     */
+    201: {
+        id: string;
+        domain: string;
+        name: string;
+        cluster: 'us1' | 'eu1';
+    };
+};
+
+export type PostApiShopsOnboardManualResponse = PostApiShopsOnboardManualResponses[keyof PostApiShopsOnboardManualResponses];

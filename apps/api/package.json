@@ -14,6 +14,8 @@
     "@aidey/contracts": "workspace:*",
     "@aidey/database": "workspace:*",
     "@aidey/identity": "workspace:*",
+    "@aidey/lightspeed": "workspace:*",
+    "@aidey/shops": "workspace:*",
     "@hono/zod-openapi": "^1.3.0",
     "hono": "^4.12.16",
     "zod": "^4.4.1"
