@@ -1,0 +1,26 @@
+{
+  "name": "aidey",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*", "packages/contexts/*"],
+  "scripts": {
+    "dev": "bun --filter '*' dev",
+    "build": "bun --filter '*' build",
+    "test": "bun --filter '*' test",
+    "typecheck": "bun --filter '*' typecheck",
+    "check": "biome check . && bun run typecheck",
+    "format": "biome check --write .",
+    "gen": "bun --filter @aidey/api-client generate",
+    "db:generate": "bun --filter @aidey/database db:generate",
+    "db:push": "bun --filter @aidey/database db:push",
+    "db:migrate": "bun --filter @aidey/database db:migrate",
+    "db:studio": "bun --filter @aidey/database db:studio",
+    "postinstall": "node -e \"const fs=require('node:fs');fs.existsSync('.env')||fs.copyFileSync('.env.example','.env')\" && lefthook install || true"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
+    "@types/bun": "latest",
+    "lefthook": "^1.7.0",
+    "typescript": "^5.9.3"
+  }
+}
