@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiSearchConfigData, GetApiSearchConfigErrors, GetApiSearchConfigResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PatchApiSearchConfigData, PatchApiSearchConfigResponses, PatchApiSearchWidgetData, PatchApiSearchWidgetResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiSearchQueryData, PostApiSearchQueryResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses } from './types.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiSearchConfigData, GetApiSearchConfigErrors, GetApiSearchConfigResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, GetWidgetAlertsData, GetWidgetAlertsErrors, GetWidgetAlertsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PatchApiSearchConfigData, PatchApiSearchConfigResponses, PatchApiSearchWidgetData, PatchApiSearchWidgetResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiSearchQueryData, PostApiSearchQueryResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses, PostWidgetSearchData, PostWidgetSearchErrors, PostWidgetSearchResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -81,6 +81,17 @@ export const patchApiSearchWidget = <ThrowOnError extends boolean = false>(optio
 
 export const postApiSearchQuery = <ThrowOnError extends boolean = false>(options?: Options<PostApiSearchQueryData, ThrowOnError>) => (options?.client ?? client).post<PostApiSearchQueryResponses, unknown, ThrowOnError>({
     url: '/api/search/query',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const getWidgetAlerts = <ThrowOnError extends boolean = false>(options?: Options<GetWidgetAlertsData, ThrowOnError>) => (options?.client ?? client).get<GetWidgetAlertsResponses, GetWidgetAlertsErrors, ThrowOnError>({ url: '/widget/alerts', ...options });
+
+export const postWidgetSearch = <ThrowOnError extends boolean = false>(options?: Options<PostWidgetSearchData, ThrowOnError>) => (options?.client ?? client).post<PostWidgetSearchResponses, PostWidgetSearchErrors, ThrowOnError>({
+    url: '/widget/search',
     ...options,
     headers: {
         'Content-Type': 'application/json',

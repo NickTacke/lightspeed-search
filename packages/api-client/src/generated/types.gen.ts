@@ -470,3 +470,64 @@ export type PostApiSearchQueryResponses = {
 };
 
 export type PostApiSearchQueryResponse = PostApiSearchQueryResponses[keyof PostApiSearchQueryResponses];
+
+export type GetWidgetAlertsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/widget/alerts';
+};
+
+export type GetWidgetAlertsErrors = {
+    /**
+     * domain not authorized
+     */
+    403: unknown;
+};
+
+export type GetWidgetAlertsResponses = {
+    /**
+     * active alerts for the calling shop
+     */
+    200: Array<{
+        id: string;
+        title: string;
+        message: string;
+        enabled: boolean;
+    }>;
+};
+
+export type GetWidgetAlertsResponse = GetWidgetAlertsResponses[keyof GetWidgetAlertsResponses];
+
+export type PostWidgetSearchData = {
+    body?: {
+        query: string;
+        limit?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/widget/search';
+};
+
+export type PostWidgetSearchErrors = {
+    /**
+     * domain not authorized
+     */
+    403: unknown;
+};
+
+export type PostWidgetSearchResponses = {
+    /**
+     * search hits
+     */
+    200: Array<{
+        productId: string;
+        title: string;
+        image: string | null;
+        brand: string | null;
+        price: string | null;
+        score: number;
+    }>;
+};
+
+export type PostWidgetSearchResponse = PostWidgetSearchResponses[keyof PostWidgetSearchResponses];
