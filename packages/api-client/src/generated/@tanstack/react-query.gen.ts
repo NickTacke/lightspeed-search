@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiShops, getApiSyncLogs, type Options, patchApiAlertsById, postApiAlerts, postApiShopsOnboardManual, postApiSyncTrigger } from '../sdk.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse } from '../types.gen';
+import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiSearchConfig, getApiShops, getApiSyncLogs, type Options, patchApiAlertsById, patchApiSearchConfig, patchApiSearchWidget, postApiAlerts, postApiSearchQuery, postApiShopsOnboardManual, postApiSyncTrigger } from '../sdk.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiSearchConfigData, GetApiSearchConfigResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PatchApiSearchConfigData, PatchApiSearchConfigResponse, PatchApiSearchWidgetData, PatchApiSearchWidgetResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiSearchQueryData, PostApiSearchQueryResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -174,6 +174,63 @@ export const postApiSyncTriggerMutation = (options?: Partial<Options<PostApiSync
     const mutationOptions: UseMutationOptions<PostApiSyncTriggerResponse, DefaultError, Options<PostApiSyncTriggerData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await postApiSyncTrigger({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getApiSearchConfigQueryKey = (options?: Options<GetApiSearchConfigData>) => createQueryKey('getApiSearchConfig', options);
+
+export const getApiSearchConfigOptions = (options?: Options<GetApiSearchConfigData>) => queryOptions<GetApiSearchConfigResponse, DefaultError, GetApiSearchConfigResponse, ReturnType<typeof getApiSearchConfigQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiSearchConfig({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiSearchConfigQueryKey(options)
+});
+
+export const patchApiSearchConfigMutation = (options?: Partial<Options<PatchApiSearchConfigData>>): UseMutationOptions<PatchApiSearchConfigResponse, DefaultError, Options<PatchApiSearchConfigData>> => {
+    const mutationOptions: UseMutationOptions<PatchApiSearchConfigResponse, DefaultError, Options<PatchApiSearchConfigData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await patchApiSearchConfig({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const patchApiSearchWidgetMutation = (options?: Partial<Options<PatchApiSearchWidgetData>>): UseMutationOptions<PatchApiSearchWidgetResponse, DefaultError, Options<PatchApiSearchWidgetData>> => {
+    const mutationOptions: UseMutationOptions<PatchApiSearchWidgetResponse, DefaultError, Options<PatchApiSearchWidgetData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await patchApiSearchWidget({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const postApiSearchQueryMutation = (options?: Partial<Options<PostApiSearchQueryData>>): UseMutationOptions<PostApiSearchQueryResponse, DefaultError, Options<PostApiSearchQueryData>> => {
+    const mutationOptions: UseMutationOptions<PostApiSearchQueryResponse, DefaultError, Options<PostApiSearchQueryData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await postApiSearchQuery({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

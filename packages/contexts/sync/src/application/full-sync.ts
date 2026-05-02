@@ -2,6 +2,7 @@ import {
   type CategoryRepository,
   type CategoryUpsertInput,
   categoryId,
+  type ProductId,
   type ProductRepository,
   type ProductUpsertInput,
   type VariantRepository,
@@ -20,6 +21,10 @@ import { sql } from "drizzle-orm";
 import type { SyncLog, SyncTrigger } from "../domain/sync-log.ts";
 import type { SyncLogRepository } from "../infrastructure/sync-log-repository.ts";
 
+export interface RegenerateEmbeddingResult {
+  generated: boolean;
+}
+
 export interface FullSyncDeps {
   db: Database;
   syncLogRepo: SyncLogRepository;
@@ -27,6 +32,7 @@ export interface FullSyncDeps {
   categoryRepo: CategoryRepository;
   variantRepo: VariantRepository;
   lightspeedClientFactory?: (creds: LightspeedCredentials) => LightspeedClient;
+  regenerateEmbedding?: (productId: ProductId) => Promise<RegenerateEmbeddingResult>;
 }
 
 const PAGE_LIMIT = 250;
@@ -91,6 +97,7 @@ export async function fullSync(
     // 2. Products + variants
     const seenProductIds = new Set<string>();
     const seenVariantIds = new Set<string>();
+    let embeddingsGenerated = 0;
     page = 1;
     while (true) {
       const products = await catalogEndpoints.listProducts(client, { page, limit: PAGE_LIMIT });
@@ -115,7 +122,8 @@ export async function fullSync(
           visible: p.visibility !== "hidden",
           sortOrder: p.sortOrder ?? 0,
         };
-        const { product } = await deps.productRepo.upsertByLightspeedId(productInput);
+        const upsertResult = await deps.productRepo.upsertByLightspeedId(productInput);
+        const product = upsertResult.product;
         seenProductIds.add(String(p.id));
 
         // Set product → categories from the embedded set
@@ -152,18 +160,28 @@ export async function fullSync(
           await deps.variantRepo.upsertByLightspeedId(variantInput);
           seenVariantIds.add(String(v.id));
         }
+
+        // 3. Embedding regen: only when product changed and embedder is wired
+        if (deps.regenerateEmbedding && upsertResult.changed) {
+          try {
+            const r = await deps.regenerateEmbedding(product.id);
+            if (r.generated) embeddingsGenerated++;
+          } catch (err) {
+            console.error("[sync] embedding regen failed", err);
+            // Don't fail the whole sync; just log and continue
+          }
+        }
       }
       page++;
     }
     await deps.productRepo.softDeleteMissing(shop.id, [...seenProductIds]);
     await deps.variantRepo.softDeleteMissing(shop.id, [...seenVariantIds]);
 
-    // 3. Embeddings: deferred to Phase 8. Sync just records that no embeddings were generated this run.
     const completed = await deps.syncLogRepo.complete(log.id, {
       status: "success",
       productsTotal: seenProductIds.size,
       categoriesTotal: seenCategoryIds.size,
-      embeddingsGenerated: 0,
+      embeddingsGenerated,
     });
     return completed ?? log;
   } catch (err) {

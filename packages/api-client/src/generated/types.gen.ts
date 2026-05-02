@@ -330,3 +330,143 @@ export type PostApiSyncTriggerResponses = {
 };
 
 export type PostApiSyncTriggerResponse = PostApiSyncTriggerResponses[keyof PostApiSyncTriggerResponses];
+
+export type GetApiSearchConfigData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/search/config';
+};
+
+export type GetApiSearchConfigErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type GetApiSearchConfigResponses = {
+    /**
+     * combined config
+     */
+    200: {
+        search: {
+            shopId: string;
+            enabledFields: Array<string>;
+            fieldWeights: {
+                [key: string]: number;
+            };
+            semanticThreshold: number;
+            resultLimit: number;
+            semanticEnabled: boolean;
+            exactMatchEnabled: boolean;
+        };
+        widget: {
+            shopId: string;
+            widgetEnabled: boolean;
+            accentColor: string | null;
+            borderRadius: number | null;
+            darkMode: boolean | null;
+            visibleFields: Array<string>;
+            maxDropdownResults: number | null;
+        };
+    };
+};
+
+export type GetApiSearchConfigResponse = GetApiSearchConfigResponses[keyof GetApiSearchConfigResponses];
+
+export type PatchApiSearchConfigData = {
+    body?: {
+        enabledFields?: Array<string>;
+        fieldWeights?: {
+            [key: string]: number;
+        };
+        semanticThreshold?: number;
+        resultLimit?: number;
+        semanticEnabled?: boolean;
+        exactMatchEnabled?: boolean;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/search/config';
+};
+
+export type PatchApiSearchConfigResponses = {
+    /**
+     * updated
+     */
+    200: {
+        shopId: string;
+        enabledFields: Array<string>;
+        fieldWeights: {
+            [key: string]: number;
+        };
+        semanticThreshold: number;
+        resultLimit: number;
+        semanticEnabled: boolean;
+        exactMatchEnabled: boolean;
+    };
+};
+
+export type PatchApiSearchConfigResponse = PatchApiSearchConfigResponses[keyof PatchApiSearchConfigResponses];
+
+export type PatchApiSearchWidgetData = {
+    body?: {
+        widgetEnabled?: boolean;
+        accentColor?: string | null;
+        borderRadius?: number | null;
+        darkMode?: boolean | null;
+        visibleFields?: Array<string>;
+        maxDropdownResults?: number | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/search/widget';
+};
+
+export type PatchApiSearchWidgetResponses = {
+    /**
+     * updated
+     */
+    200: {
+        shopId: string;
+        widgetEnabled: boolean;
+        accentColor: string | null;
+        borderRadius: number | null;
+        darkMode: boolean | null;
+        visibleFields: Array<string>;
+        maxDropdownResults: number | null;
+    };
+};
+
+export type PatchApiSearchWidgetResponse = PatchApiSearchWidgetResponses[keyof PatchApiSearchWidgetResponses];
+
+export type PostApiSearchQueryData = {
+    body?: {
+        query: string;
+        limit?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/search/query';
+};
+
+export type PostApiSearchQueryResponses = {
+    /**
+     * hits
+     */
+    200: Array<{
+        productId: string;
+        title: string;
+        image: string | null;
+        brand: string | null;
+        price: string | null;
+        score: number;
+    }>;
+};
+
+export type PostApiSearchQueryResponse = PostApiSearchQueryResponses[keyof PostApiSearchQueryResponses];

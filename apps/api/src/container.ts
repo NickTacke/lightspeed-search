@@ -14,6 +14,19 @@ import {
 import { createDatabase } from "@aidey/database";
 import { createAuth, createEmailSender } from "@aidey/identity";
 import {
+  createOpenAIEmbedder,
+  createSearchConfigRepository,
+  createWidgetConfigRepository,
+  getConfig,
+  regenerateEmbedding,
+  type SearchConfigPatch,
+  type SearchInput,
+  searchQuery,
+  updateSearchConfig,
+  updateWidgetConfig,
+  type WidgetConfigPatch,
+} from "@aidey/search";
+import {
   type CreateFromInstallInput,
   type CreateFromManualKeyInput,
   createFromInstall,
@@ -80,6 +93,21 @@ export function createContainer(env: Env) {
   const variantRepo = createVariantRepository(db);
   const syncLogRepo = createSyncLogRepository(db);
 
+  const embedder = createOpenAIEmbedder({ apiKey: env.OPENAI_API_KEY });
+  const searchConfigRepo = createSearchConfigRepository(db);
+  const widgetConfigRepo = createWidgetConfigRepository(db);
+  const search = {
+    query: (shopId: string, input: SearchInput) =>
+      searchQuery({ db, embedder, searchConfigRepo })(shopId as never, input),
+    regenerate: regenerateEmbedding({ db, embedder, productRepo, categoryRepo }),
+    getConfig: (shopId: string) =>
+      getConfig({ searchConfigRepo, widgetConfigRepo })(shopId as never),
+    updateSearchConfig: (shopId: string, patch: SearchConfigPatch) =>
+      updateSearchConfig(searchConfigRepo)(shopId as never, patch),
+    updateWidgetConfig: (shopId: string, patch: WidgetConfigPatch) =>
+      updateWidgetConfig(widgetConfigRepo)(shopId as never, patch),
+  };
+
   const listConnectedShops = async (): Promise<Shop[]> => {
     const rows = await db
       .select()
@@ -114,6 +142,7 @@ export function createContainer(env: Env) {
     productRepo,
     categoryRepo,
     variantRepo,
+    regenerateEmbedding: search.regenerate,
   };
 
   const sync = {
@@ -124,7 +153,7 @@ export function createContainer(env: Env) {
     lastSuccessful: lastSuccessful(syncLogRepo),
   };
 
-  return { db, env, auth, shops, alerts, sync };
+  return { db, env, auth, shops, alerts, sync, search };
 }
 
 export type Container = ReturnType<typeof createContainer>;
