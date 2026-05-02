@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicVerifyRouteImport } from './routes/(public)/verify'
+import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as appOnboardingRouteImport } from './routes/(app)/onboarding'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
@@ -18,6 +20,10 @@ import { Route as appDashboardSyncRouteImport } from './routes/(app)/dashboard/s
 import { Route as appDashboardSearchRouteImport } from './routes/(app)/dashboard/search'
 import { Route as appDashboardAlertsRouteImport } from './routes/(app)/dashboard/alerts'
 
+const appRouteRoute = appRouteRouteImport.update({
+  id: '/(app)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/(public)/',
   path: '/',
@@ -28,40 +34,46 @@ const publicVerifyRoute = publicVerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const publicPricingRoute = publicPricingRouteImport.update({
+  id: '/(public)/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicLoginRoute = publicLoginRouteImport.update({
   id: '/(public)/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appOnboardingRoute = appOnboardingRouteImport.update({
-  id: '/(app)/onboarding',
+  id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => appRouteRoute,
 } as any)
 const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
-  id: '/(app)/dashboard/',
+  id: '/dashboard/',
   path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => appRouteRoute,
 } as any)
 const appDashboardSyncRoute = appDashboardSyncRouteImport.update({
-  id: '/(app)/dashboard/sync',
+  id: '/dashboard/sync',
   path: '/dashboard/sync',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => appRouteRoute,
 } as any)
 const appDashboardSearchRoute = appDashboardSearchRouteImport.update({
-  id: '/(app)/dashboard/search',
+  id: '/dashboard/search',
   path: '/dashboard/search',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => appRouteRoute,
 } as any)
 const appDashboardAlertsRoute = appDashboardAlertsRouteImport.update({
-  id: '/(app)/dashboard/alerts',
+  id: '/dashboard/alerts',
   path: '/dashboard/alerts',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => appRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
+  '/pricing': typeof publicPricingRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
   '/dashboard/alerts': typeof appDashboardAlertsRoute
@@ -72,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
+  '/pricing': typeof publicPricingRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
   '/dashboard/alerts': typeof appDashboardAlertsRoute
@@ -81,8 +94,10 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(app)': typeof appRouteRouteWithChildren
   '/(app)/onboarding': typeof appOnboardingRoute
   '/(public)/login': typeof publicLoginRoute
+  '/(public)/pricing': typeof publicPricingRoute
   '/(public)/verify': typeof publicVerifyRoute
   '/(public)/': typeof publicIndexRoute
   '/(app)/dashboard/alerts': typeof appDashboardAlertsRoute
@@ -95,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/onboarding'
     | '/login'
+    | '/pricing'
     | '/verify'
     | '/'
     | '/dashboard/alerts'
@@ -105,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/onboarding'
     | '/login'
+    | '/pricing'
     | '/verify'
     | '/'
     | '/dashboard/alerts'
@@ -113,8 +130,10 @@ export interface FileRouteTypes {
     | '/dashboard'
   id:
     | '__root__'
+    | '/(app)'
     | '/(app)/onboarding'
     | '/(public)/login'
+    | '/(public)/pricing'
     | '/(public)/verify'
     | '/(public)/'
     | '/(app)/dashboard/alerts'
@@ -124,18 +143,22 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  appOnboardingRoute: typeof appOnboardingRoute
+  appRouteRoute: typeof appRouteRouteWithChildren
   publicLoginRoute: typeof publicLoginRoute
+  publicPricingRoute: typeof publicPricingRoute
   publicVerifyRoute: typeof publicVerifyRoute
   publicIndexRoute: typeof publicIndexRoute
-  appDashboardAlertsRoute: typeof appDashboardAlertsRoute
-  appDashboardSearchRoute: typeof appDashboardSearchRoute
-  appDashboardSyncRoute: typeof appDashboardSyncRoute
-  appDashboardIndexRoute: typeof appDashboardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(app)': {
+      id: '/(app)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/': {
       id: '/(public)/'
       path: '/'
@@ -150,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(public)/pricing': {
+      id: '/(public)/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof publicPricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/login': {
       id: '/(public)/login'
       path: '/login'
@@ -162,48 +192,65 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof appOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/dashboard/': {
       id: '/(app)/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof appDashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/dashboard/sync': {
       id: '/(app)/dashboard/sync'
       path: '/dashboard/sync'
       fullPath: '/dashboard/sync'
       preLoaderRoute: typeof appDashboardSyncRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/dashboard/search': {
       id: '/(app)/dashboard/search'
       path: '/dashboard/search'
       fullPath: '/dashboard/search'
       preLoaderRoute: typeof appDashboardSearchRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/dashboard/alerts': {
       id: '/(app)/dashboard/alerts'
       path: '/dashboard/alerts'
       fullPath: '/dashboard/alerts'
       preLoaderRoute: typeof appDashboardAlertsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof appRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
+interface appRouteRouteChildren {
+  appOnboardingRoute: typeof appOnboardingRoute
+  appDashboardAlertsRoute: typeof appDashboardAlertsRoute
+  appDashboardSearchRoute: typeof appDashboardSearchRoute
+  appDashboardSyncRoute: typeof appDashboardSyncRoute
+  appDashboardIndexRoute: typeof appDashboardIndexRoute
+}
+
+const appRouteRouteChildren: appRouteRouteChildren = {
   appOnboardingRoute: appOnboardingRoute,
-  publicLoginRoute: publicLoginRoute,
-  publicVerifyRoute: publicVerifyRoute,
-  publicIndexRoute: publicIndexRoute,
   appDashboardAlertsRoute: appDashboardAlertsRoute,
   appDashboardSearchRoute: appDashboardSearchRoute,
   appDashboardSyncRoute: appDashboardSyncRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
+}
+
+const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
+  appRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  appRouteRoute: appRouteRouteWithChildren,
+  publicLoginRoute: publicLoginRoute,
+  publicPricingRoute: publicPricingRoute,
+  publicVerifyRoute: publicVerifyRoute,
+  publicIndexRoute: publicIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface SyncLogDto {
   id: string;
@@ -14,9 +25,7 @@ interface SyncLogDto {
   completedAt: string | null;
 }
 
-export const Route = createFileRoute("/(app)/dashboard/sync")({
-  component: SyncPage,
-});
+export const Route = createFileRoute("/(app)/dashboard/sync")({ component: SyncPage });
 
 function SyncPage() {
   const queryClient = useQueryClient();
@@ -46,77 +55,80 @@ function SyncPage() {
   const inProgress = logs?.some((l) => l.status === "syncing");
 
   return (
-    <main style={{ maxWidth: 720, margin: "32px auto", padding: 24, fontFamily: "system-ui" }}>
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
-        <h1>Sync</h1>
-        <button
-          type="button"
-          onClick={() => trigger.mutate()}
-          disabled={trigger.isPending || inProgress}
-          style={{ padding: "8px 16px" }}
-        >
+    <div className="p-8 max-w-5xl mx-auto space-y-6">
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Sync</h1>
+          <p className="text-muted-foreground mt-1">
+            Pulls catalog data from Lightspeed every 15 minutes.
+          </p>
+        </div>
+        <Button onClick={() => trigger.mutate()} disabled={trigger.isPending || inProgress}>
           {inProgress ? "Sync running…" : trigger.isPending ? "Queueing…" : "Sync now"}
-        </button>
+        </Button>
       </header>
 
-      {isLoading && <p>loading…</p>}
-      {error && <p style={{ color: "crimson" }}>{(error as Error).message}</p>}
-      {logs && logs.length === 0 && <p>No sync history yet.</p>}
-      {logs && logs.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid #ddd" }}>
-              <th style={{ textAlign: "left", padding: 8 }}>Started</th>
-              <th style={{ textAlign: "left", padding: 8 }}>Trigger</th>
-              <th style={{ textAlign: "left", padding: 8 }}>Status</th>
-              <th style={{ textAlign: "right", padding: 8 }}>Products</th>
-              <th style={{ textAlign: "right", padding: 8 }}>Categories</th>
-              <th style={{ textAlign: "right", padding: 8 }}>Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {logs.map((l) => (
-              <tr key={l.id} style={{ borderBottom: "1px solid #f0f0f0" }}>
-                <td style={{ padding: 8 }}>{new Date(l.startedAt).toLocaleString()}</td>
-                <td style={{ padding: 8 }}>{l.trigger}</td>
-                <td
-                  style={{
-                    padding: 8,
-                    color:
-                      l.status === "failure"
-                        ? "crimson"
-                        : l.status === "success"
-                          ? "green"
-                          : "#999",
-                  }}
-                >
-                  {l.status}
-                  {l.errorMessage && (
-                    <div style={{ fontSize: 12, color: "crimson" }}>{l.errorMessage}</div>
-                  )}
-                </td>
-                <td style={{ padding: 8, textAlign: "right" }}>{l.productsTotal}</td>
-                <td style={{ padding: 8, textAlign: "right" }}>{l.categoriesTotal}</td>
-                <td style={{ padding: 8, textAlign: "right" }}>
-                  {l.completedAt
-                    ? `${Math.round(
-                        (new Date(l.completedAt).getTime() - new Date(l.startedAt).getTime()) /
-                          1000,
-                      )}s`
-                    : "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {isLoading && <p className="text-muted-foreground">loading…</p>}
+      {error && <p className="text-destructive">{(error as Error).message}</p>}
+      {logs && logs.length === 0 && (
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            No sync history yet. Connect a shop to start syncing.
+          </CardContent>
+        </Card>
       )}
-    </main>
+      {logs && logs.length > 0 && (
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Started</TableHead>
+                <TableHead>Trigger</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Products</TableHead>
+                <TableHead className="text-right">Categories</TableHead>
+                <TableHead className="text-right">Embeddings</TableHead>
+                <TableHead className="text-right">Duration</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {logs.map((l) => (
+                <TableRow key={l.id}>
+                  <TableCell>{new Date(l.startedAt).toLocaleString()}</TableCell>
+                  <TableCell>{l.trigger}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        l.status === "failure"
+                          ? "destructive"
+                          : l.status === "success"
+                            ? "default"
+                            : "secondary"
+                      }
+                    >
+                      {l.status}
+                    </Badge>
+                    {l.errorMessage && (
+                      <div className="text-xs text-destructive mt-1">{l.errorMessage}</div>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">{l.productsTotal}</TableCell>
+                  <TableCell className="text-right">{l.categoriesTotal}</TableCell>
+                  <TableCell className="text-right">{l.embeddingsGenerated}</TableCell>
+                  <TableCell className="text-right">
+                    {l.completedAt
+                      ? `${Math.round(
+                          (new Date(l.completedAt).getTime() - new Date(l.startedAt).getTime()) /
+                            1000,
+                        )}s`
+                      : "—"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+    </div>
   );
 }

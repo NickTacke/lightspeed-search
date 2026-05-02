@@ -1,6 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const searchSchema = z.object({ email: z.email().optional() });
 
@@ -35,34 +38,32 @@ function Verify() {
   }
 
   return (
-    <main
-      style={{
-        maxWidth: 360,
-        margin: "48px auto",
-        padding: 24,
-        fontFamily: "system-ui",
-      }}
-    >
-      <h1>Enter your code</h1>
-      <p>Check {email ?? "your email"} for a 6-digit code (or click the link in the email).</p>
-      <form onSubmit={onSubmit}>
-        <input
-          inputMode="numeric"
-          pattern="[0-9]{6}"
-          maxLength={6}
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          style={{ fontSize: 24, letterSpacing: 4, padding: 8, width: "100%" }}
-        />
-        <button
-          type="submit"
-          disabled={submitting || code.length !== 6}
-          style={{ marginTop: 12, padding: "8px 16px" }}
-        >
-          {submitting ? "Verifying..." : "Verify"}
-        </button>
-      </form>
-      {error && <p style={{ color: "crimson" }}>{error}</p>}
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Enter your code</CardTitle>
+          <CardDescription>
+            Check {email ?? "your email"} for a 6-digit code (or click the link in the email).
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <Input
+              inputMode="numeric"
+              pattern="[0-9]{6}"
+              maxLength={6}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="text-center text-2xl tracking-[0.4em] h-14"
+              placeholder="••••••"
+            />
+            <Button type="submit" disabled={submitting || code.length !== 6} className="w-full">
+              {submitting ? "Verifying…" : "Verify"}
+            </Button>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
