@@ -11,6 +11,7 @@
     "test": "find src tests -name '*.test.*' 2>/dev/null | grep -q . && bun test || echo 'no tests yet'"
   },
   "dependencies": {
+    "@aidey/alerts": "workspace:*",
     "@aidey/contracts": "workspace:*",
     "@aidey/database": "workspace:*",
     "@aidey/identity": "workspace:*",

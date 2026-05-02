@@ -1,3 +1,11 @@
+import {
+  createAlert,
+  createAlertRepository,
+  deleteAlert,
+  getAlert,
+  listAlerts,
+  updateAlert,
+} from "@aidey/alerts";
 import { createDatabase } from "@aidey/database";
 import { createAuth, createEmailSender } from "@aidey/identity";
 import {
@@ -39,7 +47,16 @@ export function createContainer(env: Env) {
     listForUser: listForUser(shopRepo),
   };
 
-  return { db, env, auth, shops };
+  const alertRepo = createAlertRepository(db);
+  const alerts = {
+    create: createAlert(alertRepo),
+    list: listAlerts(alertRepo),
+    get: getAlert(alertRepo),
+    update: updateAlert(alertRepo),
+    delete: deleteAlert(alertRepo),
+  };
+
+  return { db, env, auth, shops, alerts };
 }
 
 export type Container = ReturnType<typeof createContainer>;

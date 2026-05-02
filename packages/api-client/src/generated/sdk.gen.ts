@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses } from './types.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -28,5 +28,29 @@ export const postApiShopsOnboardManual = <ThrowOnError extends boolean = false>(
     headers: {
         'Content-Type': 'application/json',
         ...options?.headers
+    }
+});
+
+export const getApiAlerts = <ThrowOnError extends boolean = false>(options?: Options<GetApiAlertsData, ThrowOnError>) => (options?.client ?? client).get<GetApiAlertsResponses, GetApiAlertsErrors, ThrowOnError>({ url: '/api/alerts', ...options });
+
+export const postApiAlerts = <ThrowOnError extends boolean = false>(options?: Options<PostApiAlertsData, ThrowOnError>) => (options?.client ?? client).post<PostApiAlertsResponses, PostApiAlertsErrors, ThrowOnError>({
+    url: '/api/alerts',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const deleteApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<DeleteApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiAlertsByIdResponses, DeleteApiAlertsByIdErrors, ThrowOnError>({ url: '/api/alerts/{id}', ...options });
+
+export const getApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<GetApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiAlertsByIdResponses, GetApiAlertsByIdErrors, ThrowOnError>({ url: '/api/alerts/{id}', ...options });
+
+export const patchApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<PatchApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchApiAlertsByIdResponses, PatchApiAlertsByIdErrors, ThrowOnError>({
+    url: '/api/alerts/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
     }
 });

@@ -14,6 +14,7 @@ import { Route as publicVerifyRouteImport } from './routes/(public)/verify'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as appOnboardingRouteImport } from './routes/(app)/onboarding'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
+import { Route as appDashboardAlertsRouteImport } from './routes/(app)/dashboard/alerts'
 
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/(public)/',
@@ -40,12 +41,18 @@ const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appDashboardAlertsRoute = appDashboardAlertsRouteImport.update({
+  id: '/(app)/dashboard/alerts',
+  path: '/dashboard/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
+  '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/login': typeof publicLoginRoute
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
+  '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard': typeof appDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/(public)/login': typeof publicLoginRoute
   '/(public)/verify': typeof publicVerifyRoute
   '/(public)/': typeof publicIndexRoute
+  '/(app)/dashboard/alerts': typeof appDashboardAlertsRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/onboarding' | '/login' | '/verify' | '/' | '/dashboard/'
+  fullPaths:
+    | '/onboarding'
+    | '/login'
+    | '/verify'
+    | '/'
+    | '/dashboard/alerts'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/onboarding' | '/login' | '/verify' | '/' | '/dashboard'
+  to:
+    | '/onboarding'
+    | '/login'
+    | '/verify'
+    | '/'
+    | '/dashboard/alerts'
+    | '/dashboard'
   id:
     | '__root__'
     | '/(app)/onboarding'
     | '/(public)/login'
     | '/(public)/verify'
     | '/(public)/'
+    | '/(app)/dashboard/alerts'
     | '/(app)/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -82,6 +104,7 @@ export interface RootRouteChildren {
   publicLoginRoute: typeof publicLoginRoute
   publicVerifyRoute: typeof publicVerifyRoute
   publicIndexRoute: typeof publicIndexRoute
+  appDashboardAlertsRoute: typeof appDashboardAlertsRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
 }
 
@@ -122,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/dashboard/alerts': {
+      id: '/(app)/dashboard/alerts'
+      path: '/dashboard/alerts'
+      fullPath: '/dashboard/alerts'
+      preLoaderRoute: typeof appDashboardAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   publicLoginRoute: publicLoginRoute,
   publicVerifyRoute: publicVerifyRoute,
   publicIndexRoute: publicIndexRoute,
+  appDashboardAlertsRoute: appDashboardAlertsRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
 }
 export const routeTree = rootRouteImport

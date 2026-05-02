@@ -87,3 +87,172 @@ export type PostApiShopsOnboardManualResponses = {
 };
 
 export type PostApiShopsOnboardManualResponse = PostApiShopsOnboardManualResponses[keyof PostApiShopsOnboardManualResponses];
+
+export type GetApiAlertsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/alerts';
+};
+
+export type GetApiAlertsErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type GetApiAlertsResponses = {
+    /**
+     * list
+     */
+    200: Array<{
+        id: string;
+        shopId: string;
+        title: string;
+        message: string;
+        enabled: boolean;
+        createdAt: string | null;
+        updatedAt: string | null;
+    }>;
+};
+
+export type GetApiAlertsResponse = GetApiAlertsResponses[keyof GetApiAlertsResponses];
+
+export type PostApiAlertsData = {
+    body?: {
+        title: string;
+        message: string;
+        enabled?: boolean;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/alerts';
+};
+
+export type PostApiAlertsErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type PostApiAlertsResponses = {
+    /**
+     * created
+     */
+    201: {
+        id: string;
+        shopId: string;
+        title: string;
+        message: string;
+        enabled: boolean;
+        createdAt: string | null;
+        updatedAt: string | null;
+    };
+};
+
+export type PostApiAlertsResponse = PostApiAlertsResponses[keyof PostApiAlertsResponses];
+
+export type DeleteApiAlertsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/alerts/{id}';
+};
+
+export type DeleteApiAlertsByIdErrors = {
+    /**
+     * not found
+     */
+    404: unknown;
+};
+
+export type DeleteApiAlertsByIdResponses = {
+    /**
+     * deleted
+     */
+    204: void;
+};
+
+export type DeleteApiAlertsByIdResponse = DeleteApiAlertsByIdResponses[keyof DeleteApiAlertsByIdResponses];
+
+export type GetApiAlertsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/alerts/{id}';
+};
+
+export type GetApiAlertsByIdErrors = {
+    /**
+     * not found
+     */
+    404: unknown;
+};
+
+export type GetApiAlertsByIdResponses = {
+    /**
+     * alert
+     */
+    200: {
+        id: string;
+        shopId: string;
+        title: string;
+        message: string;
+        enabled: boolean;
+        createdAt: string | null;
+        updatedAt: string | null;
+    };
+};
+
+export type GetApiAlertsByIdResponse = GetApiAlertsByIdResponses[keyof GetApiAlertsByIdResponses];
+
+export type PatchApiAlertsByIdData = {
+    body?: {
+        title?: string;
+        message?: string;
+        enabled?: boolean;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/alerts/{id}';
+};
+
+export type PatchApiAlertsByIdErrors = {
+    /**
+     * not found
+     */
+    404: unknown;
+};
+
+export type PatchApiAlertsByIdResponses = {
+    /**
+     * updated
+     */
+    200: {
+        id: string;
+        shopId: string;
+        title: string;
+        message: string;
+        enabled: boolean;
+        createdAt: string | null;
+        updatedAt: string | null;
+    };
+};
+
+export type PatchApiAlertsByIdResponse = PatchApiAlertsByIdResponses[keyof PatchApiAlertsByIdResponses];

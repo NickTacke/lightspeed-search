@@ -15,6 +15,7 @@
       "name": "@aidey/api",
       "version": "0.0.0",
       "dependencies": {
+        "@aidey/alerts": "workspace:*",
         "@aidey/contracts": "workspace:*",
         "@aidey/database": "workspace:*",
         "@aidey/identity": "workspace:*",
@@ -63,6 +64,18 @@
       "devDependencies": {
         "@aidey/tsconfig": "workspace:*",
         "@hey-api/openapi-ts": "^0.97.0",
+      },
+    },
+    "packages/contexts/alerts": {
+      "name": "@aidey/alerts",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aidey/database": "workspace:*",
+        "@aidey/shops": "workspace:*",
+        "drizzle-orm": "^0.45.2",
+      },
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
       },
     },
     "packages/contexts/identity": {
@@ -127,6 +140,8 @@
     },
   },
   "packages": {
+    "@aidey/alerts": ["@aidey/alerts@workspace:packages/contexts/alerts"],
+
     "@aidey/api": ["@aidey/api@workspace:apps/api"],
 
     "@aidey/api-client": ["@aidey/api-client@workspace:packages/api-client"],
