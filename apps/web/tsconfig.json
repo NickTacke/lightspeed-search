@@ -6,5 +6,5 @@
     "types": ["bun", "vite/client"],
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tests/**/*"]
 }
