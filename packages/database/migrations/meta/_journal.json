@@ -36,6 +36,13 @@
       "when": 1777683221482,
       "tag": "0005_strange_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777719908543,
+      "tag": "0006_cooing_forgotten_one",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses } from './types.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiSearchConfigData, GetApiSearchConfigErrors, GetApiSearchConfigResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PatchApiSearchConfigData, PatchApiSearchConfigResponses, PatchApiSearchWidgetData, PatchApiSearchWidgetResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiSearchQueryData, PostApiSearchQueryResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -58,3 +58,32 @@ export const patchApiAlertsById = <ThrowOnError extends boolean = false>(options
 export const getApiSyncLogs = <ThrowOnError extends boolean = false>(options?: Options<GetApiSyncLogsData, ThrowOnError>) => (options?.client ?? client).get<GetApiSyncLogsResponses, GetApiSyncLogsErrors, ThrowOnError>({ url: '/api/sync/logs', ...options });
 
 export const postApiSyncTrigger = <ThrowOnError extends boolean = false>(options?: Options<PostApiSyncTriggerData, ThrowOnError>) => (options?.client ?? client).post<PostApiSyncTriggerResponses, PostApiSyncTriggerErrors, ThrowOnError>({ url: '/api/sync/trigger', ...options });
+
+export const getApiSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<GetApiSearchConfigData, ThrowOnError>) => (options?.client ?? client).get<GetApiSearchConfigResponses, GetApiSearchConfigErrors, ThrowOnError>({ url: '/api/search/config', ...options });
+
+export const patchApiSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<PatchApiSearchConfigData, ThrowOnError>) => (options?.client ?? client).patch<PatchApiSearchConfigResponses, unknown, ThrowOnError>({
+    url: '/api/search/config',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const patchApiSearchWidget = <ThrowOnError extends boolean = false>(options?: Options<PatchApiSearchWidgetData, ThrowOnError>) => (options?.client ?? client).patch<PatchApiSearchWidgetResponses, unknown, ThrowOnError>({
+    url: '/api/search/widget',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const postApiSearchQuery = <ThrowOnError extends boolean = false>(options?: Options<PostApiSearchQueryData, ThrowOnError>) => (options?.client ?? client).post<PostApiSearchQueryResponses, unknown, ThrowOnError>({
+    url: '/api/search/query',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
