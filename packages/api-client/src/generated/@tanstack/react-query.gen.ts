@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiSearchConfig, getApiShops, getApiSyncLogs, type Options, patchApiAlertsById, patchApiSearchConfig, patchApiSearchWidget, postApiAlerts, postApiSearchQuery, postApiShopsOnboardManual, postApiSyncTrigger } from '../sdk.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiSearchConfigData, GetApiSearchConfigResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PatchApiSearchConfigData, PatchApiSearchConfigResponse, PatchApiSearchWidgetData, PatchApiSearchWidgetResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiSearchQueryData, PostApiSearchQueryResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse } from '../types.gen';
+import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiSearchConfig, getApiShops, getApiSyncLogs, getWidgetAlerts, type Options, patchApiAlertsById, patchApiSearchConfig, patchApiSearchWidget, postApiAlerts, postApiSearchQuery, postApiShopsOnboardManual, postApiSyncTrigger, postWidgetSearch } from '../sdk.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiSearchConfigData, GetApiSearchConfigResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, GetWidgetAlertsData, GetWidgetAlertsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PatchApiSearchConfigData, PatchApiSearchConfigResponse, PatchApiSearchWidgetData, PatchApiSearchWidgetResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiSearchQueryData, PostApiSearchQueryResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse, PostWidgetSearchData, PostWidgetSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -231,6 +231,35 @@ export const postApiSearchQueryMutation = (options?: Partial<Options<PostApiSear
     const mutationOptions: UseMutationOptions<PostApiSearchQueryResponse, DefaultError, Options<PostApiSearchQueryData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await postApiSearchQuery({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getWidgetAlertsQueryKey = (options?: Options<GetWidgetAlertsData>) => createQueryKey('getWidgetAlerts', options);
+
+export const getWidgetAlertsOptions = (options?: Options<GetWidgetAlertsData>) => queryOptions<GetWidgetAlertsResponse, DefaultError, GetWidgetAlertsResponse, ReturnType<typeof getWidgetAlertsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getWidgetAlerts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getWidgetAlertsQueryKey(options)
+});
+
+export const postWidgetSearchMutation = (options?: Partial<Options<PostWidgetSearchData>>): UseMutationOptions<PostWidgetSearchResponse, DefaultError, Options<PostWidgetSearchData>> => {
+    const mutationOptions: UseMutationOptions<PostWidgetSearchResponse, DefaultError, Options<PostWidgetSearchData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await postWidgetSearch({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
