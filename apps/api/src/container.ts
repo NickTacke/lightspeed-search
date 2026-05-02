@@ -6,6 +6,11 @@ import {
   listAlerts,
   updateAlert,
 } from "@aidey/alerts";
+import {
+  createCategoryRepository,
+  createProductRepository,
+  createVariantRepository,
+} from "@aidey/catalog";
 import { createDatabase } from "@aidey/database";
 import { createAuth, createEmailSender } from "@aidey/identity";
 import {
@@ -17,7 +22,21 @@ import {
   getShop,
   getShopByDomain,
   listForUser,
+  type Shop,
+  type ShopCluster,
+  schema as shopsSchema,
 } from "@aidey/shops";
+import {
+  createSyncLogRepository,
+  fullSync,
+  type HandleWebhookInput,
+  handleWebhook,
+  lastSuccessful,
+  listLogs,
+  type SyncTrigger,
+  triggerCron,
+} from "@aidey/sync";
+import { isNull } from "drizzle-orm";
 import type { Env } from "./env.ts";
 
 export function createContainer(env: Env) {
@@ -56,7 +75,56 @@ export function createContainer(env: Env) {
     delete: deleteAlert(alertRepo),
   };
 
-  return { db, env, auth, shops, alerts };
+  const productRepo = createProductRepository(db);
+  const categoryRepo = createCategoryRepository(db);
+  const variantRepo = createVariantRepository(db);
+  const syncLogRepo = createSyncLogRepository(db);
+
+  const listConnectedShops = async (): Promise<Shop[]> => {
+    const rows = await db
+      .select()
+      .from(shopsSchema.shops)
+      .where(isNull(shopsSchema.shops.deletedAt));
+    return rows
+      .filter((r) => (r.installToken && r.userSecret) || (r.apiKey && r.apiSecret))
+      .map(
+        (r) =>
+          ({
+            id: r.id as never,
+            lightspeedId: r.lightspeedId,
+            domain: r.domain,
+            name: r.name,
+            email: r.email,
+            language: r.language,
+            cluster: r.cluster as ShopCluster,
+            installToken: r.installToken,
+            userSecret: r.userSecret,
+            apiKey: r.apiKey,
+            apiSecret: r.apiSecret,
+            createdAt: r.createdAt,
+            updatedAt: r.updatedAt,
+            deletedAt: r.deletedAt,
+          }) satisfies Shop,
+      );
+  };
+
+  const syncDeps = {
+    db,
+    syncLogRepo,
+    productRepo,
+    categoryRepo,
+    variantRepo,
+  };
+
+  const sync = {
+    fullSync: (shop: Shop, trigger: SyncTrigger) => fullSync(syncDeps, shop, trigger),
+    handleWebhook: (input: HandleWebhookInput) => handleWebhook(syncDeps, input),
+    triggerCron: () => triggerCron({ ...syncDeps, listConnectedShops }),
+    listLogs: listLogs(syncLogRepo),
+    lastSuccessful: lastSuccessful(syncLogRepo),
+  };
+
+  return { db, env, auth, shops, alerts, sync };
 }
 
 export type Container = ReturnType<typeof createContainer>;

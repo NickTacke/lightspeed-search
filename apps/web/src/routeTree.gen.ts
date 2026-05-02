@@ -14,6 +14,7 @@ import { Route as publicVerifyRouteImport } from './routes/(public)/verify'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as appOnboardingRouteImport } from './routes/(app)/onboarding'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
+import { Route as appDashboardSyncRouteImport } from './routes/(app)/dashboard/sync'
 import { Route as appDashboardAlertsRouteImport } from './routes/(app)/dashboard/alerts'
 
 const publicIndexRoute = publicIndexRouteImport.update({
@@ -41,6 +42,11 @@ const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appDashboardSyncRoute = appDashboardSyncRouteImport.update({
+  id: '/(app)/dashboard/sync',
+  path: '/dashboard/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const appDashboardAlertsRoute = appDashboardAlertsRouteImport.update({
   id: '/(app)/dashboard/alerts',
   path: '/dashboard/alerts',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
   '/dashboard/alerts': typeof appDashboardAlertsRoute
+  '/dashboard/sync': typeof appDashboardSyncRoute
   '/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/verify': typeof publicVerifyRoute
   '/': typeof publicIndexRoute
   '/dashboard/alerts': typeof appDashboardAlertsRoute
+  '/dashboard/sync': typeof appDashboardSyncRoute
   '/dashboard': typeof appDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/(public)/verify': typeof publicVerifyRoute
   '/(public)/': typeof publicIndexRoute
   '/(app)/dashboard/alerts': typeof appDashboardAlertsRoute
+  '/(app)/dashboard/sync': typeof appDashboardSyncRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/'
     | '/dashboard/alerts'
+    | '/dashboard/sync'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/'
     | '/dashboard/alerts'
+    | '/dashboard/sync'
     | '/dashboard'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/(public)/verify'
     | '/(public)/'
     | '/(app)/dashboard/alerts'
+    | '/(app)/dashboard/sync'
     | '/(app)/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   publicVerifyRoute: typeof publicVerifyRoute
   publicIndexRoute: typeof publicIndexRoute
   appDashboardAlertsRoute: typeof appDashboardAlertsRoute
+  appDashboardSyncRoute: typeof appDashboardSyncRoute
   appDashboardIndexRoute: typeof appDashboardIndexRoute
 }
 
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/dashboard/sync': {
+      id: '/(app)/dashboard/sync'
+      path: '/dashboard/sync'
+      fullPath: '/dashboard/sync'
+      preLoaderRoute: typeof appDashboardSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(app)/dashboard/alerts': {
       id: '/(app)/dashboard/alerts'
       path: '/dashboard/alerts'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   publicVerifyRoute: publicVerifyRoute,
   publicIndexRoute: publicIndexRoute,
   appDashboardAlertsRoute: appDashboardAlertsRoute,
+  appDashboardSyncRoute: appDashboardSyncRoute,
   appDashboardIndexRoute: appDashboardIndexRoute,
 }
 export const routeTree = rootRouteImport

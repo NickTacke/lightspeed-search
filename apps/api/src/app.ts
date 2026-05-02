@@ -6,6 +6,7 @@ import { authRoutes } from "./routes/auth.ts";
 import { healthRoute } from "./routes/health.ts";
 import { lightspeedRoutes } from "./routes/lightspeed.ts";
 import { shopRoutes } from "./routes/shops.ts";
+import { syncRoutes } from "./routes/sync.ts";
 
 export function buildApp(container: Container) {
   const app = new OpenAPIHono();
@@ -16,6 +17,7 @@ export function buildApp(container: Container) {
   app.route("/api", healthRoute());
   app.route("/api/shops", shopRoutes(container));
   app.route("/api/alerts", alertRoutes(container));
+  app.route("/api/sync", syncRoutes(container));
   app.route("/auth", authRoutes(container));
   app.route("/lightspeed", lightspeedRoutes(container));
 
