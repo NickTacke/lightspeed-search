@@ -16,11 +16,13 @@
       "version": "0.0.0",
       "dependencies": {
         "@aidey/alerts": "workspace:*",
+        "@aidey/catalog": "workspace:*",
         "@aidey/contracts": "workspace:*",
         "@aidey/database": "workspace:*",
         "@aidey/identity": "workspace:*",
         "@aidey/lightspeed": "workspace:*",
         "@aidey/shops": "workspace:*",
+        "@aidey/sync": "workspace:*",
         "@hono/zod-openapi": "^1.3.0",
         "hono": "^4.12.16",
         "zod": "^4.4.1",
@@ -130,6 +132,21 @@
         "@aidey/tsconfig": "workspace:*",
       },
     },
+    "packages/contexts/sync": {
+      "name": "@aidey/sync",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aidey/catalog": "workspace:*",
+        "@aidey/database": "workspace:*",
+        "@aidey/lightspeed": "workspace:*",
+        "@aidey/shops": "workspace:*",
+        "drizzle-orm": "^0.45.2",
+      },
+      "devDependencies": {
+        "@aidey/identity": "workspace:*",
+        "@aidey/tsconfig": "workspace:*",
+      },
+    },
     "packages/contracts": {
       "name": "@aidey/contracts",
       "version": "0.0.0",
@@ -184,6 +201,8 @@
     "@aidey/search": ["@aidey/search@workspace:packages/contexts/search"],
 
     "@aidey/shops": ["@aidey/shops@workspace:packages/contexts/shops"],
+
+    "@aidey/sync": ["@aidey/sync@workspace:packages/contexts/sync"],
 
     "@aidey/tsconfig": ["@aidey/tsconfig@workspace:packages/tsconfig"],
 

@@ -256,3 +256,77 @@ export type PatchApiAlertsByIdResponses = {
 };
 
 export type PatchApiAlertsByIdResponse = PatchApiAlertsByIdResponses[keyof PatchApiAlertsByIdResponses];
+
+export type GetApiSyncLogsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/sync/logs';
+};
+
+export type GetApiSyncLogsErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type GetApiSyncLogsResponses = {
+    /**
+     * logs
+     */
+    200: Array<{
+        id: string;
+        shopId: string;
+        status: 'syncing' | 'success' | 'failure';
+        trigger: 'cron' | 'webhook' | 'manual';
+        productsTotal: number;
+        productsAdded: number;
+        productsUpdated: number;
+        productsFailed: number;
+        categoriesTotal: number;
+        embeddingsGenerated: number;
+        errorMessage: string | null;
+        startedAt: string;
+        completedAt: string | null;
+    }>;
+};
+
+export type GetApiSyncLogsResponse = GetApiSyncLogsResponses[keyof GetApiSyncLogsResponses];
+
+export type PostApiSyncTriggerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/sync/trigger';
+};
+
+export type PostApiSyncTriggerErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+    /**
+     * shop not found
+     */
+    404: unknown;
+};
+
+export type PostApiSyncTriggerResponses = {
+    /**
+     * queued
+     */
+    202: {
+        status: 'queued';
+    };
+};
+
+export type PostApiSyncTriggerResponse = PostApiSyncTriggerResponses[keyof PostApiSyncTriggerResponses];

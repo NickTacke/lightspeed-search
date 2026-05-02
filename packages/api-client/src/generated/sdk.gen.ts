@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses } from './types.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -54,3 +54,7 @@ export const patchApiAlertsById = <ThrowOnError extends boolean = false>(options
         ...options.headers
     }
 });
+
+export const getApiSyncLogs = <ThrowOnError extends boolean = false>(options?: Options<GetApiSyncLogsData, ThrowOnError>) => (options?.client ?? client).get<GetApiSyncLogsResponses, GetApiSyncLogsErrors, ThrowOnError>({ url: '/api/sync/logs', ...options });
+
+export const postApiSyncTrigger = <ThrowOnError extends boolean = false>(options?: Options<PostApiSyncTriggerData, ThrowOnError>) => (options?.client ?? client).post<PostApiSyncTriggerResponses, PostApiSyncTriggerErrors, ThrowOnError>({ url: '/api/sync/trigger', ...options });

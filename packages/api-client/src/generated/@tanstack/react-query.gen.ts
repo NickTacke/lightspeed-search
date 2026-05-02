@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiShops, type Options, patchApiAlertsById, postApiAlerts, postApiShopsOnboardManual } from '../sdk.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiShopsData, GetApiShopsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse } from '../types.gen';
+import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiShops, getApiSyncLogs, type Options, patchApiAlertsById, postApiAlerts, postApiShopsOnboardManual, postApiSyncTrigger } from '../sdk.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -145,6 +145,35 @@ export const patchApiAlertsByIdMutation = (options?: Partial<Options<PatchApiAle
     const mutationOptions: UseMutationOptions<PatchApiAlertsByIdResponse, DefaultError, Options<PatchApiAlertsByIdData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await patchApiAlertsById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getApiSyncLogsQueryKey = (options?: Options<GetApiSyncLogsData>) => createQueryKey('getApiSyncLogs', options);
+
+export const getApiSyncLogsOptions = (options?: Options<GetApiSyncLogsData>) => queryOptions<GetApiSyncLogsResponse, DefaultError, GetApiSyncLogsResponse, ReturnType<typeof getApiSyncLogsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiSyncLogs({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiSyncLogsQueryKey(options)
+});
+
+export const postApiSyncTriggerMutation = (options?: Partial<Options<PostApiSyncTriggerData>>): UseMutationOptions<PostApiSyncTriggerResponse, DefaultError, Options<PostApiSyncTriggerData>> => {
+    const mutationOptions: UseMutationOptions<PostApiSyncTriggerResponse, DefaultError, Options<PostApiSyncTriggerData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await postApiSyncTrigger({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
