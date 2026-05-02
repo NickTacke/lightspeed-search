@@ -78,6 +78,18 @@
         "@aidey/tsconfig": "workspace:*",
       },
     },
+    "packages/contexts/catalog": {
+      "name": "@aidey/catalog",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aidey/database": "workspace:*",
+        "@aidey/shops": "workspace:*",
+        "drizzle-orm": "^0.45.2",
+      },
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
+      },
+    },
     "packages/contexts/identity": {
       "name": "@aidey/identity",
       "version": "0.0.0",
@@ -87,6 +99,19 @@
         "drizzle-orm": "^0.45.2",
         "resend": "^4.0.0",
         "zod": "^4.4.1",
+      },
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
+      },
+    },
+    "packages/contexts/search": {
+      "name": "@aidey/search",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aidey/catalog": "workspace:*",
+        "@aidey/database": "workspace:*",
+        "@aidey/shops": "workspace:*",
+        "drizzle-orm": "^0.45.2",
       },
       "devDependencies": {
         "@aidey/tsconfig": "workspace:*",
@@ -146,6 +171,8 @@
 
     "@aidey/api-client": ["@aidey/api-client@workspace:packages/api-client"],
 
+    "@aidey/catalog": ["@aidey/catalog@workspace:packages/contexts/catalog"],
+
     "@aidey/contracts": ["@aidey/contracts@workspace:packages/contracts"],
 
     "@aidey/database": ["@aidey/database@workspace:packages/database"],
@@ -153,6 +180,8 @@
     "@aidey/identity": ["@aidey/identity@workspace:packages/contexts/identity"],
 
     "@aidey/lightspeed": ["@aidey/lightspeed@workspace:packages/lightspeed"],
+
+    "@aidey/search": ["@aidey/search@workspace:packages/contexts/search"],
 
     "@aidey/shops": ["@aidey/shops@workspace:packages/contexts/shops"],
 
