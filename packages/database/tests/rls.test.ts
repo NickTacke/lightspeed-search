@@ -9,7 +9,7 @@ describe("withShopScope", () => {
     const db = createDatabase(url);
     const result = await withShopScope(db, "shop_123", async (tx) => {
       const rows = await tx.execute("select current_setting('app.shop_id', true) as s");
-      return (rows as Array<{ s: string }>)[0]?.s as string;
+      return (rows as unknown as Array<{ s: string }>)[0]?.s as string;
     });
     expect(result).toBe("shop_123");
   });
