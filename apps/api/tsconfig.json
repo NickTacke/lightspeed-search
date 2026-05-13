@@ -1,5 +1,5 @@
 {
   "extends": "@aidey/tsconfig/app.json",
   "compilerOptions": { "jsx": "react-jsx" },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tests/**/*"]
 }

@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AlertDto {
   id: string;
@@ -12,9 +20,7 @@ interface AlertDto {
   updatedAt: string;
 }
 
-export const Route = createFileRoute("/(app)/dashboard/alerts")({
-  component: Alerts,
-});
+export const Route = createFileRoute("/(app)/dashboard/alerts")({ component: Alerts });
 
 function Alerts() {
   const queryClient = useQueryClient();
@@ -50,10 +56,7 @@ function Alerts() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/alerts/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const res = await fetch(`/api/alerts/${id}`, { method: "DELETE", credentials: "include" });
       if (!res.ok) throw new Error("delete failed");
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["alerts"] }),
@@ -77,88 +80,94 @@ function Alerts() {
   const [message, setMessage] = useState("");
 
   return (
-    <main style={{ maxWidth: 720, margin: "32px auto", padding: 24, fontFamily: "system-ui" }}>
-      <h1>Alerts</h1>
+    <div className="p-8 max-w-4xl mx-auto space-y-6">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight">Alerts</h1>
+        <p className="text-muted-foreground mt-1">Banner messages displayed on your storefront.</p>
+      </header>
 
-      <section style={{ marginBottom: 32, padding: 16, border: "1px solid #ddd", borderRadius: 4 }}>
-        <h2>New alert</h2>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            create.mutate({ title, message, enabled: true });
-            setTitle("");
-            setMessage("");
-          }}
-        >
-          <label style={{ display: "block", marginBottom: 8 }}>
-            Title
-            <input
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
-            />
-          </label>
-          <label style={{ display: "block", marginBottom: 8 }}>
-            Message
-            <textarea
-              required
-              rows={3}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              style={{ display: "block", width: "100%", padding: 8, marginTop: 4 }}
-            />
-          </label>
-          <button type="submit" disabled={create.isPending} style={{ padding: "8px 16px" }}>
-            {create.isPending ? "Creating…" : "Create alert"}
-          </button>
-          {create.error && <p style={{ color: "crimson" }}>{(create.error as Error).message}</p>}
-        </form>
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>New alert</CardTitle>
+          <CardDescription>Visible to all visitors until disabled or deleted.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              create.mutate({ title, message, enabled: true });
+              setTitle("");
+              setMessage("");
+            }}
+          >
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="message">Message</Label>
+              <Textarea
+                id="message"
+                required
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </div>
+            <Button type="submit" disabled={create.isPending}>
+              {create.isPending ? "Creating…" : "Create alert"}
+            </Button>
+            {create.error && (
+              <p className="text-sm text-destructive">{(create.error as Error).message}</p>
+            )}
+          </form>
+        </CardContent>
+      </Card>
 
       <section>
-        <h2>Existing alerts</h2>
-        {isLoading && <p>loading…</p>}
-        {error && <p style={{ color: "crimson" }}>{(error as Error).message}</p>}
-        {alerts && alerts.length === 0 && <p>No alerts yet.</p>}
+        <h2 className="text-xl font-semibold mb-3">Existing alerts</h2>
+        {isLoading && <p className="text-muted-foreground">loading…</p>}
+        {error && <p className="text-destructive">{(error as Error).message}</p>}
+        {alerts && alerts.length === 0 && (
+          <Card>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              No alerts yet. Create your first one above.
+            </CardContent>
+          </Card>
+        )}
         {alerts && alerts.length > 0 && (
-          <ul style={{ listStyle: "none", padding: 0 }}>
+          <div className="space-y-3">
             {alerts.map((a) => (
-              <li key={a.id} style={{ padding: 12, borderBottom: "1px solid #eee" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <strong>{a.title}</strong>
-                    {!a.enabled && <span style={{ marginLeft: 8, color: "#999" }}>(disabled)</span>}
-                    <p style={{ margin: "4px 0", color: "#555" }}>{a.message}</p>
+              <Card key={a.id}>
+                <CardContent className="py-4 flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <strong>{a.title}</strong>
+                      {!a.enabled && <Badge variant="secondary">Disabled</Badge>}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">{a.message}</p>
                   </div>
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button
-                      type="button"
-                      onClick={() => toggle.mutate({ id: a.id, enabled: !a.enabled })}
-                      style={{ padding: "4px 12px" }}
-                    >
-                      {a.enabled ? "Disable" : "Enable"}
-                    </button>
-                    <button
-                      type="button"
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={a.enabled}
+                      onCheckedChange={(checked) => toggle.mutate({ id: a.id, enabled: checked })}
+                    />
+                    <Button
+                      size="icon"
+                      variant="ghost"
                       onClick={() => remove.mutate(a.id)}
-                      style={{ padding: "4px 12px", color: "crimson" }}
+                      title="Delete"
                     >
-                      Delete
-                    </button>
+                      <Trash2 className="size-4 text-destructive" />
+                    </Button>
                   </div>
-                </div>
-              </li>
+                </CardContent>
+              </Card>
             ))}
-          </ul>
+          </div>
         )}
       </section>
-    </main>
+    </div>
   );
 }
