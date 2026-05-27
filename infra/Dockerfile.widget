@@ -1,0 +1,11 @@
+# syntax=docker/dockerfile:1.7
+FROM oven/bun:1 AS build
+WORKDIR /app
+COPY . .
+RUN bun install --frozen-lockfile
+RUN bun --filter @aidey/widget build
+
+FROM caddy:2-alpine AS runtime
+COPY infra/Caddyfile.widget /etc/caddy/Caddyfile
+COPY --from=build /app/apps/widget/dist /srv
+EXPOSE 80

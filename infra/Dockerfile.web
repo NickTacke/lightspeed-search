@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1.7
+FROM oven/bun:1 AS build
+WORKDIR /app
+COPY . .
+RUN bun install --frozen-lockfile
+ARG VITE_API_URL
+ARG VITE_CDN_URL
+ARG VITE_SENTRY_DSN_WEB
+ARG VITE_GIT_SHA
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_CDN_URL=$VITE_CDN_URL
+ENV VITE_SENTRY_DSN_WEB=$VITE_SENTRY_DSN_WEB
+ENV VITE_GIT_SHA=$VITE_GIT_SHA
+RUN bun --filter @aidey/contracts build || true
+RUN bun --filter @aidey/web build
+
+FROM caddy:2-alpine AS runtime
+COPY infra/Caddyfile.web /etc/caddy/Caddyfile
+COPY --from=build /app/apps/web/dist /srv
+EXPOSE 80
