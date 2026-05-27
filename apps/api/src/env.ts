@@ -8,7 +8,12 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.string().url().default("http://localhost:3001"),
   RESEND_API_KEY: z.string().default(""),
   EMAIL_FROM: z.string().default("Aidey <noreply@aidey.app>"),
-  EMAIL_DEV_MODE: z.coerce.boolean().default(true),
+  // z.coerce.boolean() treats any non-empty string (including "false") as true,
+  // so "EMAIL_DEV_MODE=false" was silently dev-mode in prod. Parse explicitly.
+  EMAIL_DEV_MODE: z
+    .string()
+    .default("true")
+    .transform((v) => v.toLowerCase() === "true" || v === "1"),
   OPENAI_API_KEY: z.string().default(""),
   LIGHTSPEED_APP_KEY: z.string().default(""),
   LIGHTSPEED_APP_SECRET: z.string().default(""),

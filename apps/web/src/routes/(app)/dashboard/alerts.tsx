@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { apiUrl } from "@/lib/api";
 
 interface AlertDto {
   id: string;
@@ -31,7 +32,7 @@ function Alerts() {
   } = useQuery({
     queryKey: ["alerts"],
     queryFn: async () => {
-      const res = await fetch("/api/alerts", { credentials: "include" });
+      const res = await fetch(apiUrl("/api/alerts"), { credentials: "include" });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? `failed: ${res.status}`);
@@ -42,7 +43,7 @@ function Alerts() {
 
   const create = useMutation({
     mutationFn: async (input: { title: string; message: string; enabled: boolean }) => {
-      const res = await fetch("/api/alerts", {
+      const res = await fetch(apiUrl("/api/alerts"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         credentials: "include",
@@ -56,7 +57,10 @@ function Alerts() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/alerts/${id}`, { method: "DELETE", credentials: "include" });
+      const res = await fetch(apiUrl(`/api/alerts/${id}`), {
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("delete failed");
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["alerts"] }),
@@ -64,7 +68,7 @@ function Alerts() {
 
   const toggle = useMutation({
     mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
-      const res = await fetch(`/api/alerts/${id}`, {
+      const res = await fetch(apiUrl(`/api/alerts/${id}`), {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         credentials: "include",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { apiUrl } from "../../lib/api";
 import { authClient } from "../../lib/auth-client";
 
 export const Route = createFileRoute("/(app)/onboarding")({
@@ -28,7 +29,7 @@ function Onboarding() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/shops/onboard-manual", {
+      const res = await fetch(apiUrl("/api/shops/onboard-manual"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         credentials: "include",

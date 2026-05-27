@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { apiUrl } from "@/lib/api";
 
 const searchSchema = z.object({ email: z.email().optional() });
 
@@ -23,7 +24,7 @@ function Verify() {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const res = await fetch("/auth/verify-code", {
+    const res = await fetch(apiUrl("/auth/verify-code"), {
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials: "include",
