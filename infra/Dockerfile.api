@@ -13,7 +13,14 @@ RUN bun install --frozen-lockfile
 FROM oven/bun:1-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
+# curl: needed by Coolify's container-internal healthcheck probing /api/health.
+# ca-certificates: needed for outbound HTTPS (Lightspeed, OpenAI, Resend).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 EXPOSE 3001
+HEALTHCHECK --interval=10s --timeout=5s --start-period=15s --retries=3 \
+  CMD curl -fsS http://localhost:3001/api/health || exit 1
 CMD ["bun", "apps/api/src/index.ts"]
