@@ -51,14 +51,16 @@ import {
 } from "@aidey/sync";
 import { isNull } from "drizzle-orm";
 import type { Env } from "./env.ts";
+import { createLogger } from "./lib/logger.ts";
 
 export function createContainer(env: Env) {
+  const logger = createLogger(env);
   const db = createDatabase(env.DATABASE_URL);
   const email = createEmailSender({
     apiKey: env.RESEND_API_KEY,
     from: env.EMAIL_FROM,
     devMode: env.EMAIL_DEV_MODE,
-    logger: console.log,
+    logger: (msg) => logger.info(msg),
   });
   const auth = createAuth({
     db,
@@ -153,7 +155,7 @@ export function createContainer(env: Env) {
     lastSuccessful: lastSuccessful(syncLogRepo),
   };
 
-  return { db, env, auth, shops, alerts, sync, search };
+  return { db, env, auth, shops, alerts, sync, search, logger };
 }
 
 export type Container = ReturnType<typeof createContainer>;

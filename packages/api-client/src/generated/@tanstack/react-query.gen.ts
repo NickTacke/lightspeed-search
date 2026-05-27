@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiSearchConfig, getApiShops, getApiSyncLogs, getWidgetAlerts, type Options, patchApiAlertsById, patchApiSearchConfig, patchApiSearchWidget, postApiAlerts, postApiSearchQuery, postApiShopsOnboardManual, postApiSyncTrigger, postWidgetSearch } from '../sdk.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthResponse, GetApiSearchConfigData, GetApiSearchConfigResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, GetWidgetAlertsData, GetWidgetAlertsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PatchApiSearchConfigData, PatchApiSearchConfigResponse, PatchApiSearchWidgetData, PatchApiSearchWidgetResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiSearchQueryData, PostApiSearchQueryResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse, PostWidgetSearchData, PostWidgetSearchResponse } from '../types.gen';
+import { deleteApiAlertsById, getApiAlerts, getApiAlertsById, getApiHealth, getApiHealthReady, getApiSearchConfig, getApiShops, getApiSyncLogs, getWidgetAlerts, type Options, patchApiAlertsById, patchApiSearchConfig, patchApiSearchWidget, postApiAlerts, postApiSearchQuery, postApiShopsOnboardManual, postApiSyncTrigger, postWidgetSearch } from '../sdk.gen';
+import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdResponse, GetApiAlertsByIdData, GetApiAlertsByIdResponse, GetApiAlertsData, GetApiAlertsResponse, GetApiHealthData, GetApiHealthReadyData, GetApiHealthReadyError, GetApiHealthReadyResponse, GetApiHealthResponse, GetApiSearchConfigData, GetApiSearchConfigResponse, GetApiShopsData, GetApiShopsResponse, GetApiSyncLogsData, GetApiSyncLogsResponse, GetWidgetAlertsData, GetWidgetAlertsResponse, PatchApiAlertsByIdData, PatchApiAlertsByIdResponse, PatchApiSearchConfigData, PatchApiSearchConfigResponse, PatchApiSearchWidgetData, PatchApiSearchWidgetResponse, PostApiAlertsData, PostApiAlertsResponse, PostApiSearchQueryData, PostApiSearchQueryResponse, PostApiShopsOnboardManualData, PostApiShopsOnboardManualResponse, PostApiSyncTriggerData, PostApiSyncTriggerResponse, PostWidgetSearchData, PostWidgetSearchResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -52,6 +52,21 @@ export const getApiHealthOptions = (options?: Options<GetApiHealthData>) => quer
         return data;
     },
     queryKey: getApiHealthQueryKey(options)
+});
+
+export const getApiHealthReadyQueryKey = (options?: Options<GetApiHealthReadyData>) => createQueryKey('getApiHealthReady', options);
+
+export const getApiHealthReadyOptions = (options?: Options<GetApiHealthReadyData>) => queryOptions<GetApiHealthReadyResponse, GetApiHealthReadyError, GetApiHealthReadyResponse, ReturnType<typeof getApiHealthReadyQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiHealthReady({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiHealthReadyQueryKey(options)
 });
 
 export const getApiShopsQueryKey = (options?: Options<GetApiShopsData>) => createQueryKey('getApiShops', options);

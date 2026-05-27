@@ -23,6 +23,41 @@ export type GetApiHealthResponses = {
 
 export type GetApiHealthResponse = GetApiHealthResponses[keyof GetApiHealthResponses];
 
+export type GetApiHealthReadyData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/health/ready';
+};
+
+export type GetApiHealthReadyErrors = {
+    /**
+     * degraded
+     */
+    503: {
+        status: 'ok' | 'degraded';
+        checks: {
+            database: 'ok' | 'fail';
+        };
+    };
+};
+
+export type GetApiHealthReadyError = GetApiHealthReadyErrors[keyof GetApiHealthReadyErrors];
+
+export type GetApiHealthReadyResponses = {
+    /**
+     * ready
+     */
+    200: {
+        status: 'ok' | 'degraded';
+        checks: {
+            database: 'ok' | 'fail';
+        };
+    };
+};
+
+export type GetApiHealthReadyResponse = GetApiHealthReadyResponses[keyof GetApiHealthReadyResponses];
+
 export type GetApiShopsData = {
     body?: never;
     path?: never;

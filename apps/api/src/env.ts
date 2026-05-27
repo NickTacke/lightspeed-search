@@ -12,6 +12,9 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().default(""),
   LIGHTSPEED_APP_KEY: z.string().default(""),
   LIGHTSPEED_APP_SECRET: z.string().default(""),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  LOG_LEVEL: z.enum(["trace", "debug", "info", "warn", "error", "fatal"]).default("info"),
+  SENTRY_DSN_API: z.string().default(""),
 });
 
 export type Env = z.infer<typeof envSchema>;
