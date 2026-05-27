@@ -20,6 +20,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: { "@": new URL("./src", import.meta.url).pathname },
     },
+    build: {
+      sourcemap: true,
+    },
+    define: {
+      "import.meta.env.VITE_GIT_SHA": JSON.stringify(process.env.VITE_GIT_SHA ?? "dev"),
+    },
     server: {
       port,
       proxy: {
