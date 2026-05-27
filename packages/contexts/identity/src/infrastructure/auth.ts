@@ -12,6 +12,13 @@ export interface AuthConfig {
   baseURL: string;
   secret: string;
   webURL: string;
+  /**
+   * Optional parent domain to share session cookies across (e.g. ".aidey.app").
+   * When set, Better Auth issues SameSite=None;Secure cookies scoped to this
+   * domain so the SPA at aidey.app can use a session created by api.aidey.app.
+   * Leave empty for localhost dev (same scheme, both ports use vite proxy).
+   */
+  cookieDomain?: string;
 }
 
 /**
@@ -33,6 +40,16 @@ export function createAuth(config: AuthConfig) {
     baseURL: config.baseURL,
     basePath: "/auth",
     trustedOrigins: [config.webURL],
+    ...(config.cookieDomain
+      ? {
+          advanced: {
+            crossSubDomainCookies: {
+              enabled: true,
+              domain: config.cookieDomain,
+            },
+          },
+        }
+      : {}),
     plugins: [
       magicLink({
         sendMagicLink: async ({ email, url, token }) => {

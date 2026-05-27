@@ -68,6 +68,7 @@ export function createContainer(env: Env) {
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
     webURL: env.WEB_URL,
+    cookieDomain: env.COOKIE_DOMAIN || undefined,
   });
 
   const shopRepo = createShopRepository(db);
