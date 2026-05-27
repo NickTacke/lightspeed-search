@@ -2,7 +2,11 @@
 FROM oven/bun:1 AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
+# Copy every workspace member's package.json so Bun's workspace graph
+# matches the committed lockfile when running --frozen-lockfile.
 COPY apps/api/package.json apps/api/
+COPY apps/web/package.json apps/web/
+COPY apps/widget/package.json apps/widget/
 COPY packages packages/
 RUN bun install --frozen-lockfile
 
