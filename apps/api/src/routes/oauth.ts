@@ -3,6 +3,8 @@ import { schema as identitySchema } from "@aidey/identity";
 import { createLightspeedClient } from "@aidey/lightspeed";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
+import { sign, verify } from "hono/jwt";
 import type { Container } from "../container.ts";
 
 // Lightspeed's direct install endpoint. The merchant lands here with our
@@ -15,6 +17,19 @@ const DEFAULT_LOCALE: Locale = "nl";
 // being so tight that mild clock drift bricks installs. LS doesn't specify a
 // limit so this is a defensive default.
 const INSTALL_TIMESTAMP_SKEW_SECONDS = 300;
+// Install-intent cookie: signed token carrying { sessionId, shopId, exp } set
+// at /start, verified at /callback. Defends against replay of leaked callback
+// URLs — the LS signature only proves the request originated from LS; the
+// cookie proves the install was kicked off by THIS session for THIS shop.
+const INSTALL_INTENT_COOKIE = "aidey_ls_install";
+const INSTALL_INTENT_TTL_SECONDS = 300;
+
+interface InstallIntent {
+  sessionId: string;
+  shopId: string;
+  nonce: string;
+  exp: number;
+}
 
 function isLocale(v: string | undefined): v is Locale {
   return (
@@ -127,7 +142,9 @@ export function oauthRoutes(container: Container) {
     const sourceRaw = c.req.query("source");
     const source: Source = isSource(sourceRaw) ? sourceRaw : "direct";
 
-    const session = await container.auth.api.getSession({ headers: c.req.raw.headers });
+    const session = (await container.auth.api.getSession({
+      headers: c.req.raw.headers,
+    })) as { session?: { id?: string } } | null;
     if (!session) {
       // Carry shop_id + locale through the login round-trip so the merchant
       // can resume the install flow once authenticated.
@@ -142,6 +159,9 @@ export function oauthRoutes(container: Container) {
       return c.redirect(`${container.env.WEB_URL}/login?next=${next}`, 302);
     }
 
+    const sessionId = session.session?.id;
+    if (!sessionId) return c.json({ error: "session has no id" }, 500);
+
     // Required: LS shop_id (numeric). Captured on the landing page form;
     // merchants find it in their LS partner portal or admin URL.
     const shopId = parseShopId(c.req.query("shop_id"));
@@ -152,11 +172,27 @@ export function oauthRoutes(container: Container) {
     const localeRaw = c.req.query("locale");
     const locale: Locale = isLocale(localeRaw) ? localeRaw : DEFAULT_LOCALE;
 
-    // The install URL itself is unsigned — LS doesn't propagate arbitrary state
-    // back through the callback. CSRF protection on the callback side instead
-    // relies on the LS-issued HMAC signature (proving the request is from LS)
-    // and the user's Better-Auth session cookie (proving an authenticated user
-    // is in the loop). We don't generate a state JWT here.
+    // Mint a short-lived intent cookie binding this install attempt to the
+    // current session + the shop_id being installed. /callback requires it
+    // present and matching, which closes the replay/cross-user attack on a
+    // leaked callback URL that the LS signature alone wouldn't catch.
+    const intentToken = await sign(
+      {
+        sessionId,
+        shopId,
+        nonce: crypto.randomUUID(),
+        exp: Math.floor(Date.now() / 1000) + INSTALL_INTENT_TTL_SECONDS,
+      } satisfies InstallIntent,
+      container.env.OAUTH_STATE_SECRET,
+    );
+    setCookie(c, INSTALL_INTENT_COOKIE, intentToken, {
+      httpOnly: true,
+      secure: container.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      path: "/oauth/lightspeed",
+      maxAge: INSTALL_INTENT_TTL_SECONDS,
+    });
+
     const install = new URL(`${LS_INSTALL_HOST}/${locale}/apps/install`);
     install.searchParams.set("api_key", container.env.LIGHTSPEED_APP_KEY);
     install.searchParams.set("shop_id", shopId);
@@ -165,7 +201,9 @@ export function oauthRoutes(container: Container) {
   });
 
   app.get("/lightspeed/callback", async (c) => {
-    const session = await container.auth.api.getSession({ headers: c.req.raw.headers });
+    const session = (await container.auth.api.getSession({
+      headers: c.req.raw.headers,
+    })) as { user: { id: string }; session?: { id?: string } } | null;
     if (!session) return c.redirect(`${container.env.WEB_URL}/login`, 302);
 
     // LS install-callback shape (per the developer-portal tutorial). Note the
@@ -183,6 +221,31 @@ export function oauthRoutes(container: Container) {
       return c.json({ error: "invalid cluster_id" }, 400);
     }
     const cluster = clusterRaw;
+
+    // Install-intent check: verify the install was kicked off by THIS session
+    // for THIS shop. Defends against replay of a leaked callback URL — the LS
+    // signature only authenticates LS, not the user.
+    const intentCookie = getCookie(c, INSTALL_INTENT_COOKIE);
+    if (!intentCookie) return c.json({ error: "missing install intent" }, 400);
+    let intent: InstallIntent;
+    try {
+      intent = (await verify(
+        intentCookie,
+        container.env.OAUTH_STATE_SECRET,
+        "HS256",
+      )) as unknown as InstallIntent;
+    } catch {
+      return c.json({ error: "invalid install intent" }, 400);
+    }
+    const currentSessionId = session.session?.id;
+    if (!currentSessionId || intent.sessionId !== currentSessionId) {
+      return c.json({ error: "install intent session mismatch" }, 400);
+    }
+    if (intent.shopId !== shopIdParam) {
+      return c.json({ error: "install intent shop mismatch" }, 400);
+    }
+    // Single-use: clear the cookie so the same intent token can't double-spend.
+    deleteCookie(c, INSTALL_INTENT_COOKIE, { path: "/oauth/lightspeed" });
 
     // Verify the install signature using the documented algorithm.
     const expected = computeInstallSignature(
