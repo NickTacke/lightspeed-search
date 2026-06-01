@@ -177,10 +177,9 @@ function ShopConnected({ shop }: { shop: ShopDto }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          The next steps (plan picker, initial sync, install snippet) land in M12e-g. For now you
-          can head straight to the dashboard.
+          Next we'll import your catalog so search and alerts have data to work with.
         </p>
-        <Button onClick={() => navigate({ to: "/dashboard" })}>Go to dashboard</Button>
+        <Button onClick={() => navigate({ to: "/onboarding/sync" })}>Continue</Button>
       </CardContent>
     </Card>
   );

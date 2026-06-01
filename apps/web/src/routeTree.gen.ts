@@ -17,6 +17,7 @@ import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as appOnboardingRouteRouteImport } from './routes/(app)/onboarding/route'
 import { Route as appOnboardingIndexRouteImport } from './routes/(app)/onboarding/index'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
+import { Route as appOnboardingSyncRouteImport } from './routes/(app)/onboarding/sync'
 import { Route as appDashboardSyncRouteImport } from './routes/(app)/dashboard/sync'
 import { Route as appDashboardSearchRouteImport } from './routes/(app)/dashboard/search'
 import { Route as appDashboardAlertsRouteImport } from './routes/(app)/dashboard/alerts'
@@ -60,6 +61,11 @@ const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => appRouteRoute,
 } as any)
+const appOnboardingSyncRoute = appOnboardingSyncRouteImport.update({
+  id: '/sync',
+  path: '/sync',
+  getParentRoute: () => appOnboardingRouteRoute,
+} as any)
 const appDashboardSyncRoute = appDashboardSyncRouteImport.update({
   id: '/dashboard/sync',
   path: '/dashboard/sync',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
+  '/onboarding/sync': typeof appOnboardingSyncRoute
   '/dashboard/': typeof appDashboardIndexRoute
   '/onboarding/': typeof appOnboardingIndexRoute
 }
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
+  '/onboarding/sync': typeof appOnboardingSyncRoute
   '/dashboard': typeof appDashboardIndexRoute
   '/onboarding': typeof appOnboardingIndexRoute
 }
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/(app)/dashboard/alerts': typeof appDashboardAlertsRoute
   '/(app)/dashboard/search': typeof appDashboardSearchRoute
   '/(app)/dashboard/sync': typeof appDashboardSyncRoute
+  '/(app)/onboarding/sync': typeof appOnboardingSyncRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
   '/(app)/onboarding/': typeof appOnboardingIndexRoute
 }
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/dashboard/alerts'
     | '/dashboard/search'
     | '/dashboard/sync'
+    | '/onboarding/sync'
     | '/dashboard/'
     | '/onboarding/'
   fileRoutesByTo: FileRoutesByTo
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/dashboard/alerts'
     | '/dashboard/search'
     | '/dashboard/sync'
+    | '/onboarding/sync'
     | '/dashboard'
     | '/onboarding'
   id:
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/alerts'
     | '/(app)/dashboard/search'
     | '/(app)/dashboard/sync'
+    | '/(app)/onboarding/sync'
     | '/(app)/dashboard/'
     | '/(app)/onboarding/'
   fileRoutesById: FileRoutesById
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDashboardIndexRouteImport
       parentRoute: typeof appRouteRoute
     }
+    '/(app)/onboarding/sync': {
+      id: '/(app)/onboarding/sync'
+      path: '/sync'
+      fullPath: '/onboarding/sync'
+      preLoaderRoute: typeof appOnboardingSyncRouteImport
+      parentRoute: typeof appOnboardingRouteRoute
+    }
     '/(app)/dashboard/sync': {
       id: '/(app)/dashboard/sync'
       path: '/dashboard/sync'
@@ -243,10 +262,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface appOnboardingRouteRouteChildren {
+  appOnboardingSyncRoute: typeof appOnboardingSyncRoute
   appOnboardingIndexRoute: typeof appOnboardingIndexRoute
 }
 
 const appOnboardingRouteRouteChildren: appOnboardingRouteRouteChildren = {
+  appOnboardingSyncRoute: appOnboardingSyncRoute,
   appOnboardingIndexRoute: appOnboardingIndexRoute,
 }
 
