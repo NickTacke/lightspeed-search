@@ -7,6 +7,7 @@ import { alertRoutes } from "./routes/alerts.ts";
 import { authRoutes } from "./routes/auth.ts";
 import { healthRoute } from "./routes/health.ts";
 import { lightspeedRoutes } from "./routes/lightspeed.ts";
+import { oauthRoutes } from "./routes/oauth.ts";
 import { searchRoutes } from "./routes/search.ts";
 import { shopRoutes } from "./routes/shops.ts";
 import { syncRoutes } from "./routes/sync.ts";
@@ -27,6 +28,7 @@ export function buildApp(container: Container) {
   app.route("/api/alerts", alertRoutes(container));
   app.route("/api/sync", syncRoutes(container));
   app.route("/api/search", searchRoutes(container));
+  app.route("/api/oauth", oauthRoutes(container));
   app.route("/widget", widgetRoutes(container));
   app.route("/auth", authRoutes(container));
   app.route("/lightspeed", lightspeedRoutes(container));

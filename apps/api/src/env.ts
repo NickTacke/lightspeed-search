@@ -17,6 +17,7 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().default(""),
   LIGHTSPEED_APP_KEY: z.string().default(""),
   LIGHTSPEED_APP_SECRET: z.string().default(""),
+  OAUTH_STATE_SECRET: z.string().min(32).default("dev-oauth-state-secret-32-chars-replace"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   LOG_LEVEL: z.enum(["trace", "debug", "info", "warn", "error", "fatal"]).default("info"),
   SENTRY_DSN_API: z.string().default(""),
