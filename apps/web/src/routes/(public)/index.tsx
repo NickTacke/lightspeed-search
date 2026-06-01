@@ -3,11 +3,14 @@ import { BellRing, Search, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { API_URL } from "../../lib/api";
 
 export const Route = createFileRoute("/(public)/")({ component: Landing });
 
-const oauthStartHref = `${API_URL}/oauth/lightspeed/start?source=direct`;
+// GET form posts the user to api.aidey.app/oauth/lightspeed/start with the
+// shop_id and source as query params — no JS needed, browser navigates.
+const oauthStartAction = `${API_URL}/oauth/lightspeed/start`;
 
 function Landing() {
   return (
@@ -40,14 +43,33 @@ function Landing() {
             Aidey gives your shoppers semantic product search and lets you ship targeted alerts in
             seconds. Drop in one script - works with your existing theme.
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <Button asChild size="lg">
-              <a href={oauthStartHref}>Connect your Lightspeed shop</a>
+          <form
+            method="GET"
+            action={oauthStartAction}
+            className="mx-auto flex w-full max-w-xl flex-col gap-3 sm:flex-row sm:items-center"
+          >
+            <input type="hidden" name="source" value="direct" />
+            <Input
+              name="shop_id"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]+"
+              required
+              placeholder="Your Lightspeed shop ID"
+              className="h-12 flex-1 text-base"
+              aria-label="Lightspeed shop ID"
+            />
+            <Button type="submit" size="lg">
+              Connect Lightspeed
             </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link to="/pricing">See pricing</Link>
-            </Button>
-          </div>
+          </form>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Find your shop ID in your Lightspeed admin URL or partner portal.{" "}
+            <Link to="/pricing" className="underline hover:text-foreground">
+              See pricing
+            </Link>
+            .
+          </p>
         </section>
 
         <section className="max-w-6xl mx-auto px-6 py-16 grid gap-6 md:grid-cols-3">
