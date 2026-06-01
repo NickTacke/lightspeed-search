@@ -33,10 +33,11 @@ declare global {
   }
 
   // Signal to any embedding parent (e.g. the onboarding install-verification
-  // iframe) that the loader ran. The receiver MUST verify event.origin; we
-  // post with "*" because the loader has no knowledge of who's watching.
+  // iframe) that the loader ran. Payload deliberately carries no data beyond
+  // the boot marker — addons + shop info would be info-disclosure to any page
+  // that frames the merchant's storefront. The receiver MUST verify event.origin.
   try {
-    window.parent?.postMessage({ type: "aidey:boot", addons }, "*");
+    window.parent?.postMessage({ type: "aidey:boot" }, "*");
   } catch {
     // window.parent inaccessible (sandboxed iframe) or postMessage blocked.
   }

@@ -1,9 +1,11 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
-import { BellRing, LayoutDashboard, LogOut, RefreshCw, Search } from "lucide-react";
+import { AlertTriangle, BellRing, LayoutDashboard, LogOut, RefreshCw, Search } from "lucide-react";
 import type * as React from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "../../lib/auth-client";
+import { reportError } from "../../lib/sentry";
 
 export const Route = createFileRoute("/(app)")({
   beforeLoad: async () => {
@@ -12,7 +14,53 @@ export const Route = createFileRoute("/(app)")({
     return { user: data.user };
   },
   component: AppLayout,
+  // Scoped error boundary: when a dashboard leaf throws, the sidebar stays so
+  // the user can navigate away without a hard reload. Sentry-reported.
+  errorComponent: AppErrorComponent,
+  notFoundComponent: () => (
+    <div className="p-8">
+      <Card title="Page not found" body="This dashboard page doesn't exist." />
+    </div>
+  ),
 });
+
+function AppErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  useEffect(() => {
+    reportError(error);
+  }, [error]);
+  return (
+    <div className="p-8 max-w-xl">
+      <div className="rounded-lg border bg-card p-6 space-y-4">
+        <div className="flex items-center gap-2 text-destructive">
+          <AlertTriangle className="size-5" />
+          <h2 className="font-semibold">Something went wrong</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          This page hit an unexpected error. The team has been notified.
+        </p>
+        <pre className="text-xs bg-muted rounded p-3 overflow-auto max-h-40">{error.message}</pre>
+        <div className="flex gap-2">
+          <Button onClick={() => reset()}>Try again</Button>
+          <Button variant="outline" asChild>
+            <Link to="/dashboard">Back to dashboard</Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Card({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="rounded-lg border bg-card p-6 max-w-xl space-y-3">
+      <h2 className="font-semibold">{title}</h2>
+      <p className="text-sm text-muted-foreground">{body}</p>
+      <Button asChild variant="outline">
+        <Link to="/dashboard">Back to dashboard</Link>
+      </Button>
+    </div>
+  );
+}
 
 function AppLayout() {
   const { user } = Route.useRouteContext();
