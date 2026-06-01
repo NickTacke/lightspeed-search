@@ -23,7 +23,7 @@ function OnboardingSync() {
   const { data, error } = useQuery<SyncStatusDto>({
     queryKey: ["sync", "status"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/sync/status"), { credentials: "include" });
+      const res = await fetch(apiUrl("/sync/status"), { credentials: "include" });
       if (!res.ok) throw new Error("failed to load sync status");
       return res.json();
     },

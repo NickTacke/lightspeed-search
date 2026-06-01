@@ -32,7 +32,7 @@ function Alerts() {
   } = useQuery({
     queryKey: ["alerts"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/alerts"), { credentials: "include" });
+      const res = await fetch(apiUrl("/alerts"), { credentials: "include" });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? `failed: ${res.status}`);
@@ -43,7 +43,7 @@ function Alerts() {
 
   const create = useMutation({
     mutationFn: async (input: { title: string; message: string; enabled: boolean }) => {
-      const res = await fetch(apiUrl("/api/alerts"), {
+      const res = await fetch(apiUrl("/alerts"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         credentials: "include",
@@ -57,7 +57,7 @@ function Alerts() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(apiUrl(`/api/alerts/${id}`), {
+      const res = await fetch(apiUrl(`/alerts/${id}`), {
         method: "DELETE",
         credentials: "include",
       });
@@ -68,7 +68,7 @@ function Alerts() {
 
   const toggle = useMutation({
     mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
-      const res = await fetch(apiUrl(`/api/alerts/${id}`), {
+      const res = await fetch(apiUrl(`/alerts/${id}`), {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         credentials: "include",

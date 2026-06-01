@@ -34,7 +34,7 @@ function SearchPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["search-config"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/search/config"), { credentials: "include" });
+      const res = await fetch(apiUrl("/search/config"), { credentials: "include" });
       if (!res.ok) throw new Error(`failed: ${res.status}`);
       return res.json() as Promise<{ search: SearchConfigDto; widget: WidgetConfigDto }>;
     },
@@ -42,7 +42,7 @@ function SearchPage() {
 
   const updateSearch = useMutation({
     mutationFn: async (patch: Partial<SearchConfigDto>) => {
-      const res = await fetch(apiUrl("/api/search/config"), {
+      const res = await fetch(apiUrl("/search/config"), {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         credentials: "include",
@@ -56,7 +56,7 @@ function SearchPage() {
 
   const updateWidget = useMutation({
     mutationFn: async (patch: Partial<WidgetConfigDto>) => {
-      const res = await fetch(apiUrl("/api/search/widget"), {
+      const res = await fetch(apiUrl("/search/widget"), {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         credentials: "include",

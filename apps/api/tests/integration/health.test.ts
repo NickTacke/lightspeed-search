@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { buildTestApp } from "../harness.ts";
 
-describe("/api/health", () => {
+describe("/health", () => {
   test("liveness returns 200 with status ok", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/health");
+    const res = await app.request("/health");
     expect(res.status).toBe(200);
     const body = (await res.json()) as { status: string; uptime: number };
     expect(body.status).toBe("ok");
@@ -12,10 +12,10 @@ describe("/api/health", () => {
   });
 });
 
-describe("/api/health/ready", () => {
+describe("/health/ready", () => {
   test("returns ok when DB is reachable, degraded otherwise", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/health/ready");
+    const res = await app.request("/health/ready");
     const body = (await res.json()) as {
       status: "ok" | "degraded";
       checks: { database: "ok" | "fail" };

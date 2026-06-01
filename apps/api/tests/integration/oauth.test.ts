@@ -1,24 +1,22 @@
 import { describe, expect, test } from "bun:test";
 import { buildTestApp } from "../harness.ts";
 
-describe("GET /api/oauth/lightspeed/start", () => {
+describe("GET /oauth/lightspeed/start", () => {
   test("redirects unauthenticated visitor to /login with next param", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/oauth/lightspeed/start?source=direct");
+    const res = await app.request("/oauth/lightspeed/start?source=direct");
 
     expect(res.status).toBe(302);
     const location = res.headers.get("location");
     expect(location).toBeTruthy();
     expect(location).toContain("/login");
     expect(location).toContain("next=");
-    expect(decodeURIComponent(location ?? "")).toContain(
-      "/api/oauth/lightspeed/start?source=direct",
-    );
+    expect(decodeURIComponent(location ?? "")).toContain("/oauth/lightspeed/start?source=direct");
   });
 
   test("defaults source to 'direct' when omitted", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/oauth/lightspeed/start");
+    const res = await app.request("/oauth/lightspeed/start");
     expect(res.status).toBe(302);
     const location = res.headers.get("location") ?? "";
     expect(decodeURIComponent(location)).toContain("source=direct");
@@ -26,7 +24,7 @@ describe("GET /api/oauth/lightspeed/start", () => {
 
   test("defaults source to 'direct' when value is invalid", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/oauth/lightspeed/start?source=bogus");
+    const res = await app.request("/oauth/lightspeed/start?source=bogus");
     expect(res.status).toBe(302);
     const location = res.headers.get("location") ?? "";
     expect(decodeURIComponent(location)).toContain("source=direct");
@@ -34,18 +32,18 @@ describe("GET /api/oauth/lightspeed/start", () => {
 
   test("accepts 'app_store' source", async () => {
     const app = buildTestApp();
-    const res = await app.request("/api/oauth/lightspeed/start?source=app_store");
+    const res = await app.request("/oauth/lightspeed/start?source=app_store");
     expect(res.status).toBe(302);
     const location = res.headers.get("location") ?? "";
     expect(decodeURIComponent(location)).toContain("source=app_store");
   });
 });
 
-describe("GET /api/oauth/lightspeed/callback", () => {
+describe("GET /oauth/lightspeed/callback", () => {
   test("redirects unauthenticated visitor to /login", async () => {
     const app = buildTestApp();
     const res = await app.request(
-      "/api/oauth/lightspeed/callback?code=c&shop=s.shoplightspeed.com&cluster=eu1&state=x",
+      "/oauth/lightspeed/callback?code=c&shop=s.shoplightspeed.com&cluster=eu1&state=x",
     );
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toContain("/login");

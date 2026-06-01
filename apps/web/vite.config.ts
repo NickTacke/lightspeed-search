@@ -29,8 +29,17 @@ export default defineConfig(({ mode }) => {
     server: {
       port,
       proxy: {
-        "/api": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        // Every path the api owns; the SPA only owns /, /login, /verify, /pricing,
+        // /onboarding/*, /dashboard/*. Anything else routes to the api.
+        "/shops": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/alerts": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/sync": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/search": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/oauth": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/health": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/auth": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/widget": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/lightspeed": { target: `http://localhost:${apiPort}`, changeOrigin: true },
       },
     },
   };
