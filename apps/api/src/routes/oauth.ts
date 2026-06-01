@@ -5,8 +5,27 @@ import { Hono } from "hono";
 import { sign, verify } from "hono/jwt";
 import type { Container } from "../container.ts";
 
-const LS_AUTHORIZE_URL = "https://www.shoplightspeed.com/oauth/authorize";
 const STATE_TTL_SECONDS = 300;
+
+// Lightspeed's direct install endpoint. The merchant lands here with our
+// api_key + their shop_id, sees the consent screen, and on approval LS
+// redirects to our callback with code/shop/cluster.
+const LS_INSTALL_HOST = "https://api.webshopapp.com";
+type Locale = "nl" | "be" | "us" | "fr" | "de" | "es" | "it";
+const DEFAULT_LOCALE: Locale = "nl";
+
+function isLocale(v: string | undefined): v is Locale {
+  return (
+    v === "nl" || v === "be" || v === "us" || v === "fr" || v === "de" || v === "es" || v === "it"
+  );
+}
+
+/** Numeric shop_id from the LS partner portal. Accept digits only. */
+function parseShopId(raw: string | undefined): string | null {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  return /^\d+$/.test(trimmed) ? trimmed : null;
+}
 
 // LS webhook events we need: product+category lifecycle and shop/uninstalled.
 // shopRoutes.webhookIngress already handles inbound signature verification.
@@ -83,16 +102,31 @@ export function oauthRoutes(container: Container) {
       headers: c.req.raw.headers,
     })) as { session?: { id?: string } } | null;
     if (!session) {
-      // Absolute URL so the magic-link callbackURL can redirect cross-origin
-      // (web origin → api origin) once the user authenticates.
+      // Carry shop_id + locale through the login round-trip so the merchant
+      // can resume the install flow once authenticated.
+      const passthrough = new URLSearchParams({ source });
+      const sid = c.req.query("shop_id");
+      const loc = c.req.query("locale");
+      if (sid) passthrough.set("shop_id", sid);
+      if (loc) passthrough.set("locale", loc);
       const next = encodeURIComponent(
-        `${container.env.BETTER_AUTH_URL}/oauth/lightspeed/start?source=${source}`,
+        `${container.env.BETTER_AUTH_URL}/oauth/lightspeed/start?${passthrough}`,
       );
       return c.redirect(`${container.env.WEB_URL}/login?next=${next}`, 302);
     }
 
     const sessionId = session.session?.id;
     if (!sessionId) return c.json({ error: "session has no id" }, 500);
+
+    // Required: LS shop_id (numeric). Captured on the landing page form;
+    // merchants find it in their LS partner portal or admin URL.
+    const shopId = parseShopId(c.req.query("shop_id"));
+    if (!shopId) {
+      return c.redirect(`${container.env.WEB_URL}/?missing=shop_id`, 302);
+    }
+
+    const localeRaw = c.req.query("locale");
+    const locale: Locale = isLocale(localeRaw) ? localeRaw : DEFAULT_LOCALE;
 
     const nonce = crypto.randomUUID();
     const state = await sign(
@@ -105,12 +139,12 @@ export function oauthRoutes(container: Container) {
       container.env.OAUTH_STATE_SECRET,
     );
 
-    const authorize = new URL(LS_AUTHORIZE_URL);
-    authorize.searchParams.set("response_type", "code");
-    authorize.searchParams.set("client_id", container.env.LIGHTSPEED_APP_KEY);
-    authorize.searchParams.set("state", state);
+    const install = new URL(`${LS_INSTALL_HOST}/${locale}/apps/install`);
+    install.searchParams.set("api_key", container.env.LIGHTSPEED_APP_KEY);
+    install.searchParams.set("shop_id", shopId);
+    install.searchParams.set("state", state);
 
-    return c.redirect(authorize.toString(), 302);
+    return c.redirect(install.toString(), 302);
   });
 
   app.get("/lightspeed/callback", async (c) => {
