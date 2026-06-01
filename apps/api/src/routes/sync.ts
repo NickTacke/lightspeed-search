@@ -2,11 +2,7 @@ import { syncLogSchema, syncTriggerResponseSchema } from "@aidey/contracts";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import type { Container } from "../container.ts";
-
-interface ScopedSession {
-  user: { id: string };
-  session: { activeShopId: string | null };
-}
+import { activeShop } from "../middleware/active-shop.ts";
 
 interface SyncLogLike {
   id: string;
@@ -45,17 +41,7 @@ function toDto(log: SyncLogLike) {
 export function syncRoutes(container: Container) {
   const app = new OpenAPIHono();
 
-  app.use("/*", async (c, next) => {
-    const session = (await container.auth.api.getSession({
-      headers: c.req.raw.headers,
-    })) as ScopedSession | null;
-    if (!session) return c.json({ error: "unauthorized" }, 401);
-    if (!session.session.activeShopId) {
-      return c.json({ error: "no active shop" }, 400);
-    }
-    (c as unknown as { set: (k: string, v: unknown) => void }).set("session", session);
-    await next();
-  });
+  app.use("/*", activeShop(container));
 
   app.openapi(
     createRoute({
@@ -72,8 +58,7 @@ export function syncRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const logs = await container.sync.listLogs(shopId as never, 20);
       return c.json(logs.map(toDto));
     },
@@ -95,10 +80,7 @@ export function syncRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
-      const shop = await container.shops.getById(shopId as never);
-      if (!shop) return c.json({ error: "shop not found" }, 404);
+      const shop = c.get("activeShop");
       // Fire-and-forget; UI polls /logs to see progress
       container.sync.fullSync(shop, "manual").catch((err) => {
         console.error("[sync] manual trigger failed", err);

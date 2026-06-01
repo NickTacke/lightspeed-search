@@ -9,11 +9,7 @@ import {
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import type { Container } from "../container.ts";
-
-interface ScopedSession {
-  user: { id: string };
-  session: { activeShopId: string | null };
-}
+import { activeShop } from "../middleware/active-shop.ts";
 
 interface SearchConfigLike {
   shopId: string;
@@ -62,17 +58,7 @@ function toWidgetDto(c: WidgetConfigLike) {
 export function searchRoutes(container: Container) {
   const app = new OpenAPIHono();
 
-  app.use("/*", async (c, next) => {
-    const session = (await container.auth.api.getSession({
-      headers: c.req.raw.headers,
-    })) as ScopedSession | null;
-    if (!session) return c.json({ error: "unauthorized" }, 401);
-    if (!session.session.activeShopId) {
-      return c.json({ error: "no active shop" }, 400);
-    }
-    (c as unknown as { set: (k: string, v: unknown) => void }).set("session", session);
-    await next();
-  });
+  app.use("/*", activeShop(container));
 
   app.openapi(
     createRoute({
@@ -93,8 +79,7 @@ export function searchRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const cfg = await container.search.getConfig(shopId);
       return c.json({ search: toSearchDto(cfg.search), widget: toWidgetDto(cfg.widget) });
     },
@@ -114,8 +99,7 @@ export function searchRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const patch = c.req.valid("json");
       const updated = await container.search.updateSearchConfig(shopId, patch);
       return c.json(toSearchDto(updated));
@@ -136,8 +120,7 @@ export function searchRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const patch = c.req.valid("json");
       const updated = await container.search.updateWidgetConfig(shopId, patch);
       return c.json(toWidgetDto(updated));
@@ -158,8 +141,7 @@ export function searchRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const input = c.req.valid("json");
       const hits = await container.search.query(shopId, input);
       return c.json(hits);
