@@ -4,9 +4,12 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, isSafeNext } from "@/lib/api";
 
-const searchSchema = z.object({ email: z.email().optional() });
+const searchSchema = z.object({
+  email: z.email().optional(),
+  next: z.string().optional(),
+});
 
 export const Route = createFileRoute("/(public)/verify")({
   component: Verify,
@@ -14,7 +17,10 @@ export const Route = createFileRoute("/(public)/verify")({
 });
 
 function Verify() {
-  const { email } = Route.useSearch();
+  const { email, next: rawNext } = Route.useSearch();
+  // Reject anything that doesn't resolve to web or api origin — stops open
+  // redirects via crafted ?next= links.
+  const safeNext = isSafeNext(rawNext) ? rawNext : undefined;
   const [code, setCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,15 +30,24 @@ function Verify() {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+    const callbackURL = safeNext ?? `${window.location.origin}/dashboard`;
     const res = await fetch(apiUrl("/auth/verify-code"), {
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ code, callbackURL: "/dashboard" }),
+      // callbackURL must be absolute — Better Auth uses it as the 302 Location.
+      // Relative paths resolve against api.aidey.app and 404 the SPA.
+      body: JSON.stringify({ code, callbackURL }),
     });
     setSubmitting(false);
     if (!res.ok) {
       setError("invalid or expired code");
+      return;
+    }
+    // When `next` points off-app (e.g. /api/oauth/lightspeed/start), do a hard
+    // navigation so we actually leave the SPA; the router can't reach it.
+    if (safeNext) {
+      window.location.href = safeNext;
       return;
     }
     navigate({ to: "/dashboard" });

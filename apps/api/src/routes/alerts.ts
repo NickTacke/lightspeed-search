@@ -7,11 +7,7 @@ import {
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import type { Container } from "../container.ts";
-
-interface ScopedSession {
-  user: { id: string };
-  session: { activeShopId: string | null };
-}
+import { activeShop } from "../middleware/active-shop.ts";
 
 interface AlertLike {
   id: string;
@@ -38,18 +34,7 @@ function toDto(a: AlertLike) {
 export function alertRoutes(container: Container) {
   const app = new OpenAPIHono();
 
-  // Auth gate + active shop scope
-  app.use("/*", async (c, next) => {
-    const session = (await container.auth.api.getSession({
-      headers: c.req.raw.headers,
-    })) as ScopedSession | null;
-    if (!session) return c.json({ error: "unauthorized" }, 401);
-    if (!session.session.activeShopId) {
-      return c.json({ error: "no active shop — onboard a shop first" }, 400);
-    }
-    (c as unknown as { set: (k: string, v: unknown) => void }).set("session", session);
-    await next();
-  });
+  app.use("/*", activeShop(container));
 
   app.openapi(
     createRoute({
@@ -66,8 +51,7 @@ export function alertRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const alerts = await container.alerts.list(shopId as never);
       return c.json(alerts.map(toDto));
     },
@@ -91,8 +75,7 @@ export function alertRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const input = c.req.valid("json");
       const alert = await container.alerts.create({ ...input, shopId: shopId as never });
       return c.json(toDto(alert), 201);
@@ -114,8 +97,7 @@ export function alertRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const { id } = c.req.valid("param");
       const alert = await container.alerts.get(id as never, shopId as never);
       if (!alert) return c.json({ error: "not found" }, 404);
@@ -141,8 +123,7 @@ export function alertRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const { id } = c.req.valid("param");
       const patch = c.req.valid("json");
       const alert = await container.alerts.update(id as never, shopId as never, patch);
@@ -163,8 +144,7 @@ export function alertRoutes(container: Container) {
       },
     }),
     async (c) => {
-      const session = (c as unknown as { get: (k: string) => ScopedSession }).get("session");
-      const shopId = session.session.activeShopId as string;
+      const shopId = c.get("activeShop").id as string;
       const { id } = c.req.valid("param");
       const ok = await container.alerts.delete(id as never, shopId as never);
       if (!ok) return c.json({ error: "not found" }, 404);

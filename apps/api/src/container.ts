@@ -38,6 +38,7 @@ import {
   type Shop,
   type ShopCluster,
   schema as shopsSchema,
+  uninstallShop,
 } from "@aidey/shops";
 import {
   createSyncLogRepository,
@@ -80,6 +81,7 @@ export function createContainer(env: Env) {
     getById: getShop(shopRepo),
     getByDomain: getShopByDomain(shopRepo),
     listForUser: listForUser(shopRepo),
+    uninstall: uninstallShop(shopRepo),
   };
 
   const alertRepo = createAlertRepository(db);

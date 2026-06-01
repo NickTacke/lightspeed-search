@@ -3,8 +3,11 @@ import { BellRing, Search, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { API_URL } from "../../lib/api";
 
 export const Route = createFileRoute("/(public)/")({ component: Landing });
+
+const oauthStartHref = `${API_URL}/api/oauth/lightspeed/start?source=direct`;
 
 function Landing() {
   return (
@@ -39,7 +42,7 @@ function Landing() {
           </p>
           <div className="flex items-center justify-center gap-3">
             <Button asChild size="lg">
-              <Link to="/login">Get started</Link>
+              <a href={oauthStartHref}>Connect your Lightspeed shop</a>
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link to="/pricing">See pricing</Link>

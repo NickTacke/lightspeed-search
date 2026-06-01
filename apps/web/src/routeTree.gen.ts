@@ -14,7 +14,8 @@ import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicVerifyRouteImport } from './routes/(public)/verify'
 import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
-import { Route as appOnboardingRouteImport } from './routes/(app)/onboarding'
+import { Route as appOnboardingRouteRouteImport } from './routes/(app)/onboarding/route'
+import { Route as appOnboardingIndexRouteImport } from './routes/(app)/onboarding/index'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appDashboardSyncRouteImport } from './routes/(app)/dashboard/sync'
 import { Route as appDashboardSearchRouteImport } from './routes/(app)/dashboard/search'
@@ -44,10 +45,15 @@ const publicLoginRoute = publicLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const appOnboardingRoute = appOnboardingRouteImport.update({
+const appOnboardingRouteRoute = appOnboardingRouteRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
   getParentRoute: () => appRouteRoute,
+} as any)
+const appOnboardingIndexRoute = appOnboardingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appOnboardingRouteRoute,
 } as any)
 const appDashboardIndexRoute = appDashboardIndexRouteImport.update({
   id: '/dashboard/',
@@ -71,7 +77,7 @@ const appDashboardAlertsRoute = appDashboardAlertsRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/onboarding': typeof appOnboardingRoute
+  '/onboarding': typeof appOnboardingRouteRouteWithChildren
   '/login': typeof publicLoginRoute
   '/pricing': typeof publicPricingRoute
   '/verify': typeof publicVerifyRoute
@@ -80,9 +86,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
   '/dashboard/': typeof appDashboardIndexRoute
+  '/onboarding/': typeof appOnboardingIndexRoute
 }
 export interface FileRoutesByTo {
-  '/onboarding': typeof appOnboardingRoute
   '/login': typeof publicLoginRoute
   '/pricing': typeof publicPricingRoute
   '/verify': typeof publicVerifyRoute
@@ -91,11 +97,12 @@ export interface FileRoutesByTo {
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
   '/dashboard': typeof appDashboardIndexRoute
+  '/onboarding': typeof appOnboardingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appRouteRouteWithChildren
-  '/(app)/onboarding': typeof appOnboardingRoute
+  '/(app)/onboarding': typeof appOnboardingRouteRouteWithChildren
   '/(public)/login': typeof publicLoginRoute
   '/(public)/pricing': typeof publicPricingRoute
   '/(public)/verify': typeof publicVerifyRoute
@@ -104,6 +111,7 @@ export interface FileRoutesById {
   '/(app)/dashboard/search': typeof appDashboardSearchRoute
   '/(app)/dashboard/sync': typeof appDashboardSyncRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
+  '/(app)/onboarding/': typeof appOnboardingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,9 +125,9 @@ export interface FileRouteTypes {
     | '/dashboard/search'
     | '/dashboard/sync'
     | '/dashboard/'
+    | '/onboarding/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/onboarding'
     | '/login'
     | '/pricing'
     | '/verify'
@@ -128,6 +136,7 @@ export interface FileRouteTypes {
     | '/dashboard/search'
     | '/dashboard/sync'
     | '/dashboard'
+    | '/onboarding'
   id:
     | '__root__'
     | '/(app)'
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/search'
     | '/(app)/dashboard/sync'
     | '/(app)/dashboard/'
+    | '/(app)/onboarding/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,8 +201,15 @@ declare module '@tanstack/react-router' {
       id: '/(app)/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
-      preLoaderRoute: typeof appOnboardingRouteImport
+      preLoaderRoute: typeof appOnboardingRouteRouteImport
       parentRoute: typeof appRouteRoute
+    }
+    '/(app)/onboarding/': {
+      id: '/(app)/onboarding/'
+      path: '/'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof appOnboardingIndexRouteImport
+      parentRoute: typeof appOnboardingRouteRoute
     }
     '/(app)/dashboard/': {
       id: '/(app)/dashboard/'
@@ -225,8 +242,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface appOnboardingRouteRouteChildren {
+  appOnboardingIndexRoute: typeof appOnboardingIndexRoute
+}
+
+const appOnboardingRouteRouteChildren: appOnboardingRouteRouteChildren = {
+  appOnboardingIndexRoute: appOnboardingIndexRoute,
+}
+
+const appOnboardingRouteRouteWithChildren =
+  appOnboardingRouteRoute._addFileChildren(appOnboardingRouteRouteChildren)
+
 interface appRouteRouteChildren {
-  appOnboardingRoute: typeof appOnboardingRoute
+  appOnboardingRouteRoute: typeof appOnboardingRouteRouteWithChildren
   appDashboardAlertsRoute: typeof appDashboardAlertsRoute
   appDashboardSearchRoute: typeof appDashboardSearchRoute
   appDashboardSyncRoute: typeof appDashboardSyncRoute
@@ -234,7 +262,7 @@ interface appRouteRouteChildren {
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
-  appOnboardingRoute: appOnboardingRoute,
+  appOnboardingRouteRoute: appOnboardingRouteRouteWithChildren,
   appDashboardAlertsRoute: appDashboardAlertsRoute,
   appDashboardSearchRoute: appDashboardSearchRoute,
   appDashboardSyncRoute: appDashboardSyncRoute,
