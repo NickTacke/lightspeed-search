@@ -172,6 +172,15 @@ export function oauthRoutes(container: Container) {
       userSecret: tokens.user_secret,
     });
 
+    // Fire-and-forget initial catalog sync. The merchant lands on /onboarding/sync
+    // which polls /api/sync/status; the wizard waits for status=success to advance.
+    container.sync.fullSync(newShop, "manual").catch((err) => {
+      container.logger.warn(
+        { err: { message: err instanceof Error ? err.message : "unknown" }, shopId: newShop.id },
+        "initial post-oauth sync failed",
+      );
+    });
+
     // Mark this shop as the user's active shop. activeShopId is a Better Auth
     // additional session field (see identity/auth.ts). Update the session row directly.
     const sessionId = (session as { session?: { id?: string } }).session?.id;

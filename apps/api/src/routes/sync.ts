@@ -1,4 +1,4 @@
-import { syncLogSchema, syncTriggerResponseSchema } from "@aidey/contracts";
+import { syncLogSchema, syncStatusDtoSchema, syncTriggerResponseSchema } from "@aidey/contracts";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import type { Container } from "../container.ts";
@@ -61,6 +61,45 @@ export function syncRoutes(container: Container) {
       const shopId = c.get("activeShop").id as string;
       const logs = await container.sync.listLogs(shopId as never, 20);
       return c.json(logs.map(toDto));
+    },
+  );
+
+  app.openapi(
+    createRoute({
+      method: "get",
+      path: "/status",
+      tags: ["sync"],
+      responses: {
+        200: {
+          description: "derived sync status for the active shop",
+          content: { "application/json": { schema: syncStatusDtoSchema } },
+        },
+        401: { description: "unauthorized" },
+        400: { description: "no active shop" },
+      },
+    }),
+    async (c) => {
+      const shopId = c.get("activeShop").id as string;
+      const logs = await container.sync.listLogs(shopId as never, 1);
+      const latest = logs[0];
+      if (!latest) {
+        return c.json({
+          status: "idle" as const,
+          productsTotal: 0,
+          productsCompleted: 0,
+          startedAt: null,
+          completedAt: null,
+          errorMessage: null,
+        });
+      }
+      return c.json({
+        status: latest.status,
+        productsTotal: latest.productsTotal,
+        productsCompleted: latest.productsAdded + latest.productsUpdated,
+        startedAt: latest.startedAt.toISOString(),
+        completedAt: latest.completedAt?.toISOString() ?? null,
+        errorMessage: latest.errorMessage,
+      });
     },
   );
 

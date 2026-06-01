@@ -21,3 +21,18 @@ export const syncLogSchema = z.object({
 export type SyncLogDto = z.infer<typeof syncLogSchema>;
 
 export const syncTriggerResponseSchema = z.object({ status: z.literal("queued") });
+
+/**
+ * Derived "what's happening right now?" view of sync for a shop. Used by the
+ * onboarding wizard's sync step to render progress. Adds an "idle" status
+ * (no sync has ever run) on top of the raw log status enum.
+ */
+export const syncStatusDtoSchema = z.object({
+  status: z.enum(["idle", "syncing", "success", "failure"]),
+  productsTotal: z.number().int().nonnegative(),
+  productsCompleted: z.number().int().nonnegative(),
+  startedAt: z.string().nullable(),
+  completedAt: z.string().nullable(),
+  errorMessage: z.string().nullable(),
+});
+export type SyncStatusDto = z.infer<typeof syncStatusDtoSchema>;
