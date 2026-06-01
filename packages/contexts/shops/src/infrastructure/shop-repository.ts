@@ -68,6 +68,15 @@ export function createShopRepository(db: Database) {
       return rows.map((r) => toShop(r.shop));
     },
 
+    async softDelete(id: ShopId): Promise<boolean> {
+      const result = await db
+        .update(schema.shops)
+        .set({ deletedAt: new Date(), updatedAt: new Date() })
+        .where(and(eq(schema.shops.id, id), isNull(schema.shops.deletedAt)))
+        .returning({ id: schema.shops.id });
+      return result.length > 0;
+    },
+
     async insertWithUserLink(input: InsertShopWithUserLinkInput): Promise<Shop> {
       return db.transaction(async (tx) => {
         const [row] = await tx
