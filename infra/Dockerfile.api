@@ -13,10 +13,12 @@ RUN bun install --frozen-lockfile
 FROM oven/bun:1-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
-# curl: needed by Coolify's container-internal healthcheck probing /health.
+# curl: kept for the Dockerfile HEALTHCHECK below + ad-hoc debugging.
+# wget: Coolify's default container healthcheck uses wget; without it the
+#       deploy succeeds but Coolify marks the container unhealthy.
 # ca-certificates: needed for outbound HTTPS (Lightspeed, OpenAI, Resend).
 RUN apt-get update \
- && apt-get install -y --no-install-recommends curl ca-certificates \
+ && apt-get install -y --no-install-recommends curl wget ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
