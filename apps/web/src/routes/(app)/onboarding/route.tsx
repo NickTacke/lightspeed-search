@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { CheckCircle2, Circle } from "lucide-react";
 import { authClient } from "../../../lib/auth-client";
 
@@ -36,10 +36,17 @@ function OnboardingLayout() {
   );
 }
 
+// Maps the current path's last segment to a step. The index route is the
+// "connect" step; nested routes (sync, install, done) match their key.
+function pathToStepIndex(pathname: string): number {
+  const segment = pathname.replace(/\/$/, "").split("/").pop();
+  const idx = STEPS.findIndex((s) => s.key === segment);
+  return idx === -1 ? 0 : idx;
+}
+
 function Stepper() {
-  // For the skeleton we don't yet derive completion from server state.
-  // M12e+ fill this in by reading shop/plan/sync status from the api.
-  const currentIndex = 0;
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const currentIndex = pathToStepIndex(pathname);
   return (
     <ol className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
       {STEPS.map((step, i) => {
