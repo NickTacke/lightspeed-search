@@ -1,14 +1,25 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { isSafeNext } from "../../lib/api";
 import { signIn } from "../../lib/auth-client";
 
-export const Route = createFileRoute("/(public)/login")({ component: Login });
+const loginSearchSchema = z.object({ next: z.string().optional() });
+
+export const Route = createFileRoute("/(public)/login")({
+  component: Login,
+  validateSearch: (s) => loginSearchSchema.parse(s),
+});
 
 function Login() {
+  const { next: rawNext } = Route.useSearch();
+  // Reject anything that doesn't resolve to web or api origin — stops open
+  // redirects via crafted ?next= links.
+  const safeNext = isSafeNext(rawNext) ? rawNext : undefined;
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,13 +29,14 @@ function Login() {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    const { error: signInError } = await signIn.magicLink({ email, callbackURL: "/dashboard" });
+    const callbackURL = safeNext ?? `${window.location.origin}/dashboard`;
+    const { error: signInError } = await signIn.magicLink({ email, callbackURL });
     setSubmitting(false);
     if (signInError) {
       setError(signInError.message ?? "failed to send");
       return;
     }
-    navigate({ to: "/verify", search: { email } });
+    navigate({ to: "/verify", search: { email, next: safeNext } });
   }
 
   return (
