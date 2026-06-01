@@ -7,7 +7,7 @@ import { API_URL } from "../../lib/api";
 
 export const Route = createFileRoute("/(public)/")({ component: Landing });
 
-const oauthStartHref = `${API_URL}/api/oauth/lightspeed/start?source=direct`;
+const oauthStartHref = `${API_URL}/oauth/lightspeed/start?source=direct`;
 
 function Landing() {
   return (

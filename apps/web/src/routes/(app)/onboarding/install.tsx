@@ -25,7 +25,7 @@ function OnboardingInstall() {
   const { data: shops, isLoading } = useQuery<ShopDto[]>({
     queryKey: ["shops"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/shops"), { credentials: "include" });
+      const res = await fetch(apiUrl("/shops"), { credentials: "include" });
       if (!res.ok) throw new Error("failed to load shops");
       return res.json();
     },

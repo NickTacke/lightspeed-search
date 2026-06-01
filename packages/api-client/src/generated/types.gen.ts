@@ -4,14 +4,14 @@ export type ClientOptions = {
     baseUrl: 'http://localhost:3001' | (string & {});
 };
 
-export type GetApiHealthData = {
+export type GetHealthData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/health';
+    url: '/health';
 };
 
-export type GetApiHealthResponses = {
+export type GetHealthResponses = {
     /**
      * ok
      */
@@ -21,16 +21,16 @@ export type GetApiHealthResponses = {
     };
 };
 
-export type GetApiHealthResponse = GetApiHealthResponses[keyof GetApiHealthResponses];
+export type GetHealthResponse = GetHealthResponses[keyof GetHealthResponses];
 
-export type GetApiHealthReadyData = {
+export type GetHealthReadyData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/health/ready';
+    url: '/health/ready';
 };
 
-export type GetApiHealthReadyErrors = {
+export type GetHealthReadyErrors = {
     /**
      * degraded
      */
@@ -42,9 +42,9 @@ export type GetApiHealthReadyErrors = {
     };
 };
 
-export type GetApiHealthReadyError = GetApiHealthReadyErrors[keyof GetApiHealthReadyErrors];
+export type GetHealthReadyError = GetHealthReadyErrors[keyof GetHealthReadyErrors];
 
-export type GetApiHealthReadyResponses = {
+export type GetHealthReadyResponses = {
     /**
      * ready
      */
@@ -56,23 +56,23 @@ export type GetApiHealthReadyResponses = {
     };
 };
 
-export type GetApiHealthReadyResponse = GetApiHealthReadyResponses[keyof GetApiHealthReadyResponses];
+export type GetHealthReadyResponse = GetHealthReadyResponses[keyof GetHealthReadyResponses];
 
-export type GetApiShopsData = {
+export type GetShopsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/shops';
+    url: '/shops';
 };
 
-export type GetApiShopsErrors = {
+export type GetShopsErrors = {
     /**
      * unauthorized
      */
     401: unknown;
 };
 
-export type GetApiShopsResponses = {
+export type GetShopsResponses = {
     /**
      * list of shops the current user owns
      */
@@ -84,9 +84,9 @@ export type GetApiShopsResponses = {
     }>;
 };
 
-export type GetApiShopsResponse = GetApiShopsResponses[keyof GetApiShopsResponses];
+export type GetShopsResponse = GetShopsResponses[keyof GetShopsResponses];
 
-export type PostApiShopsOnboardManualData = {
+export type PostShopsOnboardManualData = {
     body?: {
         domain: string;
         apiKey: string;
@@ -95,10 +95,10 @@ export type PostApiShopsOnboardManualData = {
     };
     path?: never;
     query?: never;
-    url: '/api/shops/onboard-manual';
+    url: '/shops/onboard-manual';
 };
 
-export type PostApiShopsOnboardManualErrors = {
+export type PostShopsOnboardManualErrors = {
     /**
      * invalid credentials
      */
@@ -109,7 +109,7 @@ export type PostApiShopsOnboardManualErrors = {
     401: unknown;
 };
 
-export type PostApiShopsOnboardManualResponses = {
+export type PostShopsOnboardManualResponses = {
     /**
      * shop created from manual API key
      */
@@ -121,16 +121,16 @@ export type PostApiShopsOnboardManualResponses = {
     };
 };
 
-export type PostApiShopsOnboardManualResponse = PostApiShopsOnboardManualResponses[keyof PostApiShopsOnboardManualResponses];
+export type PostShopsOnboardManualResponse = PostShopsOnboardManualResponses[keyof PostShopsOnboardManualResponses];
 
-export type GetApiAlertsData = {
+export type GetAlertsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/alerts';
+    url: '/alerts';
 };
 
-export type GetApiAlertsErrors = {
+export type GetAlertsErrors = {
     /**
      * no active shop
      */
@@ -141,7 +141,7 @@ export type GetApiAlertsErrors = {
     401: unknown;
 };
 
-export type GetApiAlertsResponses = {
+export type GetAlertsResponses = {
     /**
      * list
      */
@@ -156,9 +156,9 @@ export type GetApiAlertsResponses = {
     }>;
 };
 
-export type GetApiAlertsResponse = GetApiAlertsResponses[keyof GetApiAlertsResponses];
+export type GetAlertsResponse = GetAlertsResponses[keyof GetAlertsResponses];
 
-export type PostApiAlertsData = {
+export type PostAlertsData = {
     body?: {
         title: string;
         message: string;
@@ -166,10 +166,10 @@ export type PostApiAlertsData = {
     };
     path?: never;
     query?: never;
-    url: '/api/alerts';
+    url: '/alerts';
 };
 
-export type PostApiAlertsErrors = {
+export type PostAlertsErrors = {
     /**
      * no active shop
      */
@@ -180,7 +180,7 @@ export type PostApiAlertsErrors = {
     401: unknown;
 };
 
-export type PostApiAlertsResponses = {
+export type PostAlertsResponses = {
     /**
      * created
      */
@@ -195,50 +195,50 @@ export type PostApiAlertsResponses = {
     };
 };
 
-export type PostApiAlertsResponse = PostApiAlertsResponses[keyof PostApiAlertsResponses];
+export type PostAlertsResponse = PostAlertsResponses[keyof PostAlertsResponses];
 
-export type DeleteApiAlertsByIdData = {
+export type DeleteAlertsByIdData = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
-    url: '/api/alerts/{id}';
+    url: '/alerts/{id}';
 };
 
-export type DeleteApiAlertsByIdErrors = {
+export type DeleteAlertsByIdErrors = {
     /**
      * not found
      */
     404: unknown;
 };
 
-export type DeleteApiAlertsByIdResponses = {
+export type DeleteAlertsByIdResponses = {
     /**
      * deleted
      */
     204: void;
 };
 
-export type DeleteApiAlertsByIdResponse = DeleteApiAlertsByIdResponses[keyof DeleteApiAlertsByIdResponses];
+export type DeleteAlertsByIdResponse = DeleteAlertsByIdResponses[keyof DeleteAlertsByIdResponses];
 
-export type GetApiAlertsByIdData = {
+export type GetAlertsByIdData = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
-    url: '/api/alerts/{id}';
+    url: '/alerts/{id}';
 };
 
-export type GetApiAlertsByIdErrors = {
+export type GetAlertsByIdErrors = {
     /**
      * not found
      */
     404: unknown;
 };
 
-export type GetApiAlertsByIdResponses = {
+export type GetAlertsByIdResponses = {
     /**
      * alert
      */
@@ -253,9 +253,9 @@ export type GetApiAlertsByIdResponses = {
     };
 };
 
-export type GetApiAlertsByIdResponse = GetApiAlertsByIdResponses[keyof GetApiAlertsByIdResponses];
+export type GetAlertsByIdResponse = GetAlertsByIdResponses[keyof GetAlertsByIdResponses];
 
-export type PatchApiAlertsByIdData = {
+export type PatchAlertsByIdData = {
     body?: {
         title?: string;
         message?: string;
@@ -265,17 +265,17 @@ export type PatchApiAlertsByIdData = {
         id: string;
     };
     query?: never;
-    url: '/api/alerts/{id}';
+    url: '/alerts/{id}';
 };
 
-export type PatchApiAlertsByIdErrors = {
+export type PatchAlertsByIdErrors = {
     /**
      * not found
      */
     404: unknown;
 };
 
-export type PatchApiAlertsByIdResponses = {
+export type PatchAlertsByIdResponses = {
     /**
      * updated
      */
@@ -290,16 +290,16 @@ export type PatchApiAlertsByIdResponses = {
     };
 };
 
-export type PatchApiAlertsByIdResponse = PatchApiAlertsByIdResponses[keyof PatchApiAlertsByIdResponses];
+export type PatchAlertsByIdResponse = PatchAlertsByIdResponses[keyof PatchAlertsByIdResponses];
 
-export type GetApiSyncLogsData = {
+export type GetSyncLogsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/sync/logs';
+    url: '/sync/logs';
 };
 
-export type GetApiSyncLogsErrors = {
+export type GetSyncLogsErrors = {
     /**
      * no active shop
      */
@@ -310,7 +310,7 @@ export type GetApiSyncLogsErrors = {
     401: unknown;
 };
 
-export type GetApiSyncLogsResponses = {
+export type GetSyncLogsResponses = {
     /**
      * logs
      */
@@ -331,16 +331,50 @@ export type GetApiSyncLogsResponses = {
     }>;
 };
 
-export type GetApiSyncLogsResponse = GetApiSyncLogsResponses[keyof GetApiSyncLogsResponses];
+export type GetSyncLogsResponse = GetSyncLogsResponses[keyof GetSyncLogsResponses];
 
-export type PostApiSyncTriggerData = {
+export type GetSyncStatusData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/sync/trigger';
+    url: '/sync/status';
 };
 
-export type PostApiSyncTriggerErrors = {
+export type GetSyncStatusErrors = {
+    /**
+     * no active shop
+     */
+    400: unknown;
+    /**
+     * unauthorized
+     */
+    401: unknown;
+};
+
+export type GetSyncStatusResponses = {
+    /**
+     * derived sync status for the active shop
+     */
+    200: {
+        status: 'idle' | 'syncing' | 'success' | 'failure';
+        productsTotal: number;
+        productsCompleted: number;
+        startedAt: string | null;
+        completedAt: string | null;
+        errorMessage: string | null;
+    };
+};
+
+export type GetSyncStatusResponse = GetSyncStatusResponses[keyof GetSyncStatusResponses];
+
+export type PostSyncTriggerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/sync/trigger';
+};
+
+export type PostSyncTriggerErrors = {
     /**
      * no active shop
      */
@@ -355,7 +389,7 @@ export type PostApiSyncTriggerErrors = {
     404: unknown;
 };
 
-export type PostApiSyncTriggerResponses = {
+export type PostSyncTriggerResponses = {
     /**
      * queued
      */
@@ -364,16 +398,16 @@ export type PostApiSyncTriggerResponses = {
     };
 };
 
-export type PostApiSyncTriggerResponse = PostApiSyncTriggerResponses[keyof PostApiSyncTriggerResponses];
+export type PostSyncTriggerResponse = PostSyncTriggerResponses[keyof PostSyncTriggerResponses];
 
-export type GetApiSearchConfigData = {
+export type GetSearchConfigData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/search/config';
+    url: '/search/config';
 };
 
-export type GetApiSearchConfigErrors = {
+export type GetSearchConfigErrors = {
     /**
      * no active shop
      */
@@ -384,7 +418,7 @@ export type GetApiSearchConfigErrors = {
     401: unknown;
 };
 
-export type GetApiSearchConfigResponses = {
+export type GetSearchConfigResponses = {
     /**
      * combined config
      */
@@ -412,9 +446,9 @@ export type GetApiSearchConfigResponses = {
     };
 };
 
-export type GetApiSearchConfigResponse = GetApiSearchConfigResponses[keyof GetApiSearchConfigResponses];
+export type GetSearchConfigResponse = GetSearchConfigResponses[keyof GetSearchConfigResponses];
 
-export type PatchApiSearchConfigData = {
+export type PatchSearchConfigData = {
     body?: {
         enabledFields?: Array<string>;
         fieldWeights?: {
@@ -427,10 +461,10 @@ export type PatchApiSearchConfigData = {
     };
     path?: never;
     query?: never;
-    url: '/api/search/config';
+    url: '/search/config';
 };
 
-export type PatchApiSearchConfigResponses = {
+export type PatchSearchConfigResponses = {
     /**
      * updated
      */
@@ -447,9 +481,9 @@ export type PatchApiSearchConfigResponses = {
     };
 };
 
-export type PatchApiSearchConfigResponse = PatchApiSearchConfigResponses[keyof PatchApiSearchConfigResponses];
+export type PatchSearchConfigResponse = PatchSearchConfigResponses[keyof PatchSearchConfigResponses];
 
-export type PatchApiSearchWidgetData = {
+export type PatchSearchWidgetData = {
     body?: {
         widgetEnabled?: boolean;
         accentColor?: string | null;
@@ -460,10 +494,10 @@ export type PatchApiSearchWidgetData = {
     };
     path?: never;
     query?: never;
-    url: '/api/search/widget';
+    url: '/search/widget';
 };
 
-export type PatchApiSearchWidgetResponses = {
+export type PatchSearchWidgetResponses = {
     /**
      * updated
      */
@@ -478,19 +512,19 @@ export type PatchApiSearchWidgetResponses = {
     };
 };
 
-export type PatchApiSearchWidgetResponse = PatchApiSearchWidgetResponses[keyof PatchApiSearchWidgetResponses];
+export type PatchSearchWidgetResponse = PatchSearchWidgetResponses[keyof PatchSearchWidgetResponses];
 
-export type PostApiSearchQueryData = {
+export type PostSearchQueryData = {
     body?: {
         query: string;
         limit?: number;
     };
     path?: never;
     query?: never;
-    url: '/api/search/query';
+    url: '/search/query';
 };
 
-export type PostApiSearchQueryResponses = {
+export type PostSearchQueryResponses = {
     /**
      * hits
      */
@@ -504,7 +538,7 @@ export type PostApiSearchQueryResponses = {
     }>;
 };
 
-export type PostApiSearchQueryResponse = PostApiSearchQueryResponses[keyof PostApiSearchQueryResponses];
+export type PostSearchQueryResponse = PostSearchQueryResponses[keyof PostSearchQueryResponses];
 
 export type GetWidgetAlertsData = {
     body?: never;

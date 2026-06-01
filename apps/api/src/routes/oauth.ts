@@ -86,7 +86,7 @@ export function oauthRoutes(container: Container) {
       // Absolute URL so the magic-link callbackURL can redirect cross-origin
       // (web origin → api origin) once the user authenticates.
       const next = encodeURIComponent(
-        `${container.env.BETTER_AUTH_URL}/api/oauth/lightspeed/start?source=${source}`,
+        `${container.env.BETTER_AUTH_URL}/oauth/lightspeed/start?source=${source}`,
       );
       return c.redirect(`${container.env.WEB_URL}/login?next=${next}`, 302);
     }

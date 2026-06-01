@@ -18,17 +18,26 @@ export function buildApp(container: Container) {
 
   app.use("*", requestId(container.logger));
 
-  app.use("/api/*", cors({ origin: container.env.WEB_URL, credentials: true }));
-  app.use("/auth/*", cors({ origin: container.env.WEB_URL, credentials: true }));
-  // Widget endpoints are public; CORS is wildcard origin (no credentials), then domain-based auth.
+  // The dashboard + auth endpoints accept credentialed requests from the web app.
+  // Widget endpoints are public (wildcard origin, no credentials) and rely on
+  // domain-based auth instead. Webhook ingress (/lightspeed/*) is server-to-server
+  // and needs no CORS at all.
+  const dashboardCors = cors({ origin: container.env.WEB_URL, credentials: true });
+  app.use("/shops/*", dashboardCors);
+  app.use("/alerts/*", dashboardCors);
+  app.use("/sync/*", dashboardCors);
+  app.use("/search/*", dashboardCors);
+  app.use("/oauth/*", dashboardCors);
+  app.use("/health/*", dashboardCors);
+  app.use("/auth/*", dashboardCors);
   app.use("/widget/*", cors({ origin: "*", credentials: false }));
 
-  app.route("/api", healthRoute(container));
-  app.route("/api/shops", shopRoutes(container));
-  app.route("/api/alerts", alertRoutes(container));
-  app.route("/api/sync", syncRoutes(container));
-  app.route("/api/search", searchRoutes(container));
-  app.route("/api/oauth", oauthRoutes(container));
+  app.route("/", healthRoute(container));
+  app.route("/shops", shopRoutes(container));
+  app.route("/alerts", alertRoutes(container));
+  app.route("/sync", syncRoutes(container));
+  app.route("/search", searchRoutes(container));
+  app.route("/oauth", oauthRoutes(container));
   app.route("/widget", widgetRoutes(container));
   app.route("/auth", authRoutes(container));
   app.route("/lightspeed", lightspeedRoutes(container));

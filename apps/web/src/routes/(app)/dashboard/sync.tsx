@@ -37,7 +37,7 @@ function SyncPage() {
   } = useQuery({
     queryKey: ["sync-logs"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/sync/logs"), { credentials: "include" });
+      const res = await fetch(apiUrl("/sync/logs"), { credentials: "include" });
       if (!res.ok) throw new Error(`failed: ${res.status}`);
       return res.json() as Promise<SyncLogDto[]>;
     },
@@ -46,7 +46,7 @@ function SyncPage() {
 
   const trigger = useMutation({
     mutationFn: async () => {
-      const res = await fetch(apiUrl("/api/sync/trigger"), {
+      const res = await fetch(apiUrl("/sync/trigger"), {
         method: "POST",
         credentials: "include",
       });

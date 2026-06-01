@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteApiAlertsByIdData, DeleteApiAlertsByIdErrors, DeleteApiAlertsByIdResponses, GetApiAlertsByIdData, GetApiAlertsByIdErrors, GetApiAlertsByIdResponses, GetApiAlertsData, GetApiAlertsErrors, GetApiAlertsResponses, GetApiHealthData, GetApiHealthReadyData, GetApiHealthReadyErrors, GetApiHealthReadyResponses, GetApiHealthResponses, GetApiSearchConfigData, GetApiSearchConfigErrors, GetApiSearchConfigResponses, GetApiShopsData, GetApiShopsErrors, GetApiShopsResponses, GetApiSyncLogsData, GetApiSyncLogsErrors, GetApiSyncLogsResponses, GetWidgetAlertsData, GetWidgetAlertsErrors, GetWidgetAlertsResponses, PatchApiAlertsByIdData, PatchApiAlertsByIdErrors, PatchApiAlertsByIdResponses, PatchApiSearchConfigData, PatchApiSearchConfigResponses, PatchApiSearchWidgetData, PatchApiSearchWidgetResponses, PostApiAlertsData, PostApiAlertsErrors, PostApiAlertsResponses, PostApiSearchQueryData, PostApiSearchQueryResponses, PostApiShopsOnboardManualData, PostApiShopsOnboardManualErrors, PostApiShopsOnboardManualResponses, PostApiSyncTriggerData, PostApiSyncTriggerErrors, PostApiSyncTriggerResponses, PostWidgetSearchData, PostWidgetSearchErrors, PostWidgetSearchResponses } from './types.gen';
+import type { DeleteAlertsByIdData, DeleteAlertsByIdErrors, DeleteAlertsByIdResponses, GetAlertsByIdData, GetAlertsByIdErrors, GetAlertsByIdResponses, GetAlertsData, GetAlertsErrors, GetAlertsResponses, GetHealthData, GetHealthReadyData, GetHealthReadyErrors, GetHealthReadyResponses, GetHealthResponses, GetSearchConfigData, GetSearchConfigErrors, GetSearchConfigResponses, GetShopsData, GetShopsErrors, GetShopsResponses, GetSyncLogsData, GetSyncLogsErrors, GetSyncLogsResponses, GetSyncStatusData, GetSyncStatusErrors, GetSyncStatusResponses, GetWidgetAlertsData, GetWidgetAlertsErrors, GetWidgetAlertsResponses, PatchAlertsByIdData, PatchAlertsByIdErrors, PatchAlertsByIdResponses, PatchSearchConfigData, PatchSearchConfigResponses, PatchSearchWidgetData, PatchSearchWidgetResponses, PostAlertsData, PostAlertsErrors, PostAlertsResponses, PostSearchQueryData, PostSearchQueryResponses, PostShopsOnboardManualData, PostShopsOnboardManualErrors, PostShopsOnboardManualResponses, PostSyncTriggerData, PostSyncTriggerErrors, PostSyncTriggerResponses, PostWidgetSearchData, PostWidgetSearchErrors, PostWidgetSearchResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -18,14 +18,14 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-export const getApiHealth = <ThrowOnError extends boolean = false>(options?: Options<GetApiHealthData, ThrowOnError>) => (options?.client ?? client).get<GetApiHealthResponses, unknown, ThrowOnError>({ url: '/api/health', ...options });
+export const getHealth = <ThrowOnError extends boolean = false>(options?: Options<GetHealthData, ThrowOnError>) => (options?.client ?? client).get<GetHealthResponses, unknown, ThrowOnError>({ url: '/health', ...options });
 
-export const getApiHealthReady = <ThrowOnError extends boolean = false>(options?: Options<GetApiHealthReadyData, ThrowOnError>) => (options?.client ?? client).get<GetApiHealthReadyResponses, GetApiHealthReadyErrors, ThrowOnError>({ url: '/api/health/ready', ...options });
+export const getHealthReady = <ThrowOnError extends boolean = false>(options?: Options<GetHealthReadyData, ThrowOnError>) => (options?.client ?? client).get<GetHealthReadyResponses, GetHealthReadyErrors, ThrowOnError>({ url: '/health/ready', ...options });
 
-export const getApiShops = <ThrowOnError extends boolean = false>(options?: Options<GetApiShopsData, ThrowOnError>) => (options?.client ?? client).get<GetApiShopsResponses, GetApiShopsErrors, ThrowOnError>({ url: '/api/shops', ...options });
+export const getShops = <ThrowOnError extends boolean = false>(options?: Options<GetShopsData, ThrowOnError>) => (options?.client ?? client).get<GetShopsResponses, GetShopsErrors, ThrowOnError>({ url: '/shops', ...options });
 
-export const postApiShopsOnboardManual = <ThrowOnError extends boolean = false>(options?: Options<PostApiShopsOnboardManualData, ThrowOnError>) => (options?.client ?? client).post<PostApiShopsOnboardManualResponses, PostApiShopsOnboardManualErrors, ThrowOnError>({
-    url: '/api/shops/onboard-manual',
+export const postShopsOnboardManual = <ThrowOnError extends boolean = false>(options?: Options<PostShopsOnboardManualData, ThrowOnError>) => (options?.client ?? client).post<PostShopsOnboardManualResponses, PostShopsOnboardManualErrors, ThrowOnError>({
+    url: '/shops/onboard-manual',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -33,10 +33,10 @@ export const postApiShopsOnboardManual = <ThrowOnError extends boolean = false>(
     }
 });
 
-export const getApiAlerts = <ThrowOnError extends boolean = false>(options?: Options<GetApiAlertsData, ThrowOnError>) => (options?.client ?? client).get<GetApiAlertsResponses, GetApiAlertsErrors, ThrowOnError>({ url: '/api/alerts', ...options });
+export const getAlerts = <ThrowOnError extends boolean = false>(options?: Options<GetAlertsData, ThrowOnError>) => (options?.client ?? client).get<GetAlertsResponses, GetAlertsErrors, ThrowOnError>({ url: '/alerts', ...options });
 
-export const postApiAlerts = <ThrowOnError extends boolean = false>(options?: Options<PostApiAlertsData, ThrowOnError>) => (options?.client ?? client).post<PostApiAlertsResponses, PostApiAlertsErrors, ThrowOnError>({
-    url: '/api/alerts',
+export const postAlerts = <ThrowOnError extends boolean = false>(options?: Options<PostAlertsData, ThrowOnError>) => (options?.client ?? client).post<PostAlertsResponses, PostAlertsErrors, ThrowOnError>({
+    url: '/alerts',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -44,12 +44,12 @@ export const postApiAlerts = <ThrowOnError extends boolean = false>(options?: Op
     }
 });
 
-export const deleteApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<DeleteApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiAlertsByIdResponses, DeleteApiAlertsByIdErrors, ThrowOnError>({ url: '/api/alerts/{id}', ...options });
+export const deleteAlertsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAlertsByIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteAlertsByIdResponses, DeleteAlertsByIdErrors, ThrowOnError>({ url: '/alerts/{id}', ...options });
 
-export const getApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<GetApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiAlertsByIdResponses, GetApiAlertsByIdErrors, ThrowOnError>({ url: '/api/alerts/{id}', ...options });
+export const getAlertsById = <ThrowOnError extends boolean = false>(options: Options<GetAlertsByIdData, ThrowOnError>) => (options.client ?? client).get<GetAlertsByIdResponses, GetAlertsByIdErrors, ThrowOnError>({ url: '/alerts/{id}', ...options });
 
-export const patchApiAlertsById = <ThrowOnError extends boolean = false>(options: Options<PatchApiAlertsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchApiAlertsByIdResponses, PatchApiAlertsByIdErrors, ThrowOnError>({
-    url: '/api/alerts/{id}',
+export const patchAlertsById = <ThrowOnError extends boolean = false>(options: Options<PatchAlertsByIdData, ThrowOnError>) => (options.client ?? client).patch<PatchAlertsByIdResponses, PatchAlertsByIdErrors, ThrowOnError>({
+    url: '/alerts/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -57,14 +57,16 @@ export const patchApiAlertsById = <ThrowOnError extends boolean = false>(options
     }
 });
 
-export const getApiSyncLogs = <ThrowOnError extends boolean = false>(options?: Options<GetApiSyncLogsData, ThrowOnError>) => (options?.client ?? client).get<GetApiSyncLogsResponses, GetApiSyncLogsErrors, ThrowOnError>({ url: '/api/sync/logs', ...options });
+export const getSyncLogs = <ThrowOnError extends boolean = false>(options?: Options<GetSyncLogsData, ThrowOnError>) => (options?.client ?? client).get<GetSyncLogsResponses, GetSyncLogsErrors, ThrowOnError>({ url: '/sync/logs', ...options });
 
-export const postApiSyncTrigger = <ThrowOnError extends boolean = false>(options?: Options<PostApiSyncTriggerData, ThrowOnError>) => (options?.client ?? client).post<PostApiSyncTriggerResponses, PostApiSyncTriggerErrors, ThrowOnError>({ url: '/api/sync/trigger', ...options });
+export const getSyncStatus = <ThrowOnError extends boolean = false>(options?: Options<GetSyncStatusData, ThrowOnError>) => (options?.client ?? client).get<GetSyncStatusResponses, GetSyncStatusErrors, ThrowOnError>({ url: '/sync/status', ...options });
 
-export const getApiSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<GetApiSearchConfigData, ThrowOnError>) => (options?.client ?? client).get<GetApiSearchConfigResponses, GetApiSearchConfigErrors, ThrowOnError>({ url: '/api/search/config', ...options });
+export const postSyncTrigger = <ThrowOnError extends boolean = false>(options?: Options<PostSyncTriggerData, ThrowOnError>) => (options?.client ?? client).post<PostSyncTriggerResponses, PostSyncTriggerErrors, ThrowOnError>({ url: '/sync/trigger', ...options });
 
-export const patchApiSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<PatchApiSearchConfigData, ThrowOnError>) => (options?.client ?? client).patch<PatchApiSearchConfigResponses, unknown, ThrowOnError>({
-    url: '/api/search/config',
+export const getSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<GetSearchConfigData, ThrowOnError>) => (options?.client ?? client).get<GetSearchConfigResponses, GetSearchConfigErrors, ThrowOnError>({ url: '/search/config', ...options });
+
+export const patchSearchConfig = <ThrowOnError extends boolean = false>(options?: Options<PatchSearchConfigData, ThrowOnError>) => (options?.client ?? client).patch<PatchSearchConfigResponses, unknown, ThrowOnError>({
+    url: '/search/config',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -72,8 +74,8 @@ export const patchApiSearchConfig = <ThrowOnError extends boolean = false>(optio
     }
 });
 
-export const patchApiSearchWidget = <ThrowOnError extends boolean = false>(options?: Options<PatchApiSearchWidgetData, ThrowOnError>) => (options?.client ?? client).patch<PatchApiSearchWidgetResponses, unknown, ThrowOnError>({
-    url: '/api/search/widget',
+export const patchSearchWidget = <ThrowOnError extends boolean = false>(options?: Options<PatchSearchWidgetData, ThrowOnError>) => (options?.client ?? client).patch<PatchSearchWidgetResponses, unknown, ThrowOnError>({
+    url: '/search/widget',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -81,8 +83,8 @@ export const patchApiSearchWidget = <ThrowOnError extends boolean = false>(optio
     }
 });
 
-export const postApiSearchQuery = <ThrowOnError extends boolean = false>(options?: Options<PostApiSearchQueryData, ThrowOnError>) => (options?.client ?? client).post<PostApiSearchQueryResponses, unknown, ThrowOnError>({
-    url: '/api/search/query',
+export const postSearchQuery = <ThrowOnError extends boolean = false>(options?: Options<PostSearchQueryData, ThrowOnError>) => (options?.client ?? client).post<PostSearchQueryResponses, unknown, ThrowOnError>({
+    url: '/search/query',
     ...options,
     headers: {
         'Content-Type': 'application/json',

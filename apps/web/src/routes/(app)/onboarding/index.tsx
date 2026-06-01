@@ -22,7 +22,7 @@ function OnboardingIndex() {
   const { data: shops, isLoading } = useQuery<ShopDto[]>({
     queryKey: ["shops"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/shops"), { credentials: "include" });
+      const res = await fetch(apiUrl("/shops"), { credentials: "include" });
       if (!res.ok) throw new Error("failed to load shops");
       return res.json();
     },
@@ -53,8 +53,8 @@ function ConnectStep() {
         <a
           href={
             API_URL
-              ? `${API_URL}/api/oauth/lightspeed/start?source=direct`
-              : "/api/oauth/lightspeed/start?source=direct"
+              ? `${API_URL}/oauth/lightspeed/start?source=direct`
+              : "/oauth/lightspeed/start?source=direct"
           }
         >
           <Button className="w-full" size="lg">
@@ -86,7 +86,7 @@ function ManualKeyForm() {
   });
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(apiUrl("/api/shops/onboard-manual"), {
+      const res = await fetch(apiUrl("/shops/onboard-manual"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         credentials: "include",

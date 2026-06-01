@@ -44,7 +44,7 @@ function Verify() {
       setError("invalid or expired code");
       return;
     }
-    // When `next` points off-app (e.g. /api/oauth/lightspeed/start), do a hard
+    // When `next` points off-app (e.g. /oauth/lightspeed/start), do a hard
     // navigation so we actually leave the SPA; the router can't reach it.
     if (safeNext) {
       window.location.href = safeNext;
