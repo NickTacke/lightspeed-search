@@ -13,8 +13,13 @@ export interface CreateFromInstallDeps {
 
 export interface CreateFromInstallInput {
   userId: string;
+  /** Fallback used only if Lightspeed doesn't return a domain on the shop record. */
   domain: string;
+  /** Our partner-app API key (env LIGHTSPEED_APP_KEY) — the Basic-auth username for every LS API call. */
+  appKey: string;
+  /** Per-shop install token Lightspeed delivered in the install callback. */
   installToken: string;
+  /** Per-shop secret, derived as md5(installToken + LIGHTSPEED_APP_SECRET). Used as Basic-auth password AND webhook HMAC key. */
   userSecret: string;
   cluster: ShopCluster;
 }
@@ -24,9 +29,12 @@ export async function createFromInstall(
   input: CreateFromInstallInput,
 ): Promise<Shop> {
   const factory = deps.lightspeedClientFactory ?? createLightspeedClient;
+  // Per https://developers.lightspeedhq.com/ecom/tutorials/installing-an-app/
+  // every LS API call from the partner app authenticates as Basic(APP_KEY, userSecret).
+  // The installToken is NOT in the auth header — it's the input we derived userSecret from.
   const client = factory({
     cluster: input.cluster,
-    apiKey: input.installToken,
+    apiKey: input.appKey,
     apiSecret: input.userSecret,
   });
   const lsShop = await shopEndpoints.getShop(client);
