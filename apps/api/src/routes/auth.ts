@@ -25,8 +25,23 @@ export function authRoutes(container: Container) {
       token,
     )}&callbackURL=${encodeURIComponent(callback)}`;
 
-    // Hand off to Better Auth's handler so the session cookie is set on the response
-    return container.auth.handler(new Request(verifyURL, { headers: c.req.raw.headers }));
+    // Hand off to Better Auth's handler so the session cookie is set on the response.
+    // Better Auth returns a 302 redirect to callbackURL on success — that's the right
+    // shape for a browser GET, but our client calls this endpoint via fetch() with
+    // credentials. A cross-origin redirect from api.aidey.app to aidey.app fails CORS
+    // because the SPA host returns no Access-Control-Allow-Origin. Convert the 302
+    // into a 200 JSON response (forwarding Set-Cookie so the session is still set)
+    // and let the client navigate explicitly.
+    const authRes = await container.auth.handler(
+      new Request(verifyURL, { headers: c.req.raw.headers }),
+    );
+    if (authRes.status >= 300 && authRes.status < 400) {
+      const headers = new Headers({ "content-type": "application/json" });
+      const setCookies = authRes.headers.getSetCookie?.() ?? [];
+      for (const cookie of setCookies) headers.append("set-cookie", cookie);
+      return new Response(JSON.stringify({ status: "ok" }), { status: 200, headers });
+    }
+    return authRes;
   });
 
   // Catch-all: forward anything else to Better Auth's handler
