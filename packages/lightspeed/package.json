@@ -12,6 +12,9 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
+  "dependencies": {
+    "@aidey/rate-limit": "workspace:*"
+  },
   "devDependencies": {
     "@aidey/tsconfig": "workspace:*"
   }

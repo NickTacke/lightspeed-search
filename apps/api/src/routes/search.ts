@@ -6,10 +6,19 @@ import {
   updateWidgetConfigSchema,
   widgetConfigSchema,
 } from "@aidey/contracts";
+import { KeyedRateLimiter, rateLimit } from "@aidey/rate-limit";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import type { Container } from "../container.ts";
 import { activeShop } from "../middleware/active-shop.ts";
+
+// 30 req/min per shop on the merchant-facing search endpoint. Stops a runaway
+// dashboard widget from burning OpenAI embedding cost; well above any normal
+// human use of the test-search tool.
+const searchQueryLimiter = new KeyedRateLimiter({
+  capacity: 30,
+  refillPerSecond: 30 / 60,
+});
 
 interface SearchConfigLike {
   shopId: string;
@@ -59,6 +68,16 @@ export function searchRoutes(container: Container) {
   const app = new OpenAPIHono();
 
   app.use("/*", activeShop(container));
+
+  // Per-shop rate limit on the embedding-heavy /query path only; config/widget
+  // reads are cheap and don't need it.
+  app.use(
+    "/query",
+    rateLimit({
+      limiter: searchQueryLimiter,
+      keyFn: (c) => c.get("activeShop").id as string,
+    }),
+  );
 
   app.openapi(
     createRoute({

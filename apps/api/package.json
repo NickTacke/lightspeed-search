@@ -17,6 +17,7 @@
     "@aidey/database": "workspace:*",
     "@aidey/identity": "workspace:*",
     "@aidey/lightspeed": "workspace:*",
+    "@aidey/rate-limit": "workspace:*",
     "@aidey/search": "workspace:*",
     "@aidey/shops": "workspace:*",
     "@aidey/sync": "workspace:*",

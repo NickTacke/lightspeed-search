@@ -1,5 +1,5 @@
+import { LeakyBucket } from "@aidey/rate-limit";
 import { LightspeedError, RateLimitedError } from "./errors.ts";
-import { LeakyBucket } from "./rate-limiter.ts";
 
 export interface LightspeedCredentials {
   cluster: "us1" | "eu1";
