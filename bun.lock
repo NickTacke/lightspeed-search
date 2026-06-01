@@ -21,6 +21,7 @@
         "@aidey/database": "workspace:*",
         "@aidey/identity": "workspace:*",
         "@aidey/lightspeed": "workspace:*",
+        "@aidey/rate-limit": "workspace:*",
         "@aidey/search": "workspace:*",
         "@aidey/shops": "workspace:*",
         "@aidey/sync": "workspace:*",
@@ -202,8 +203,22 @@
     "packages/lightspeed": {
       "name": "@aidey/lightspeed",
       "version": "0.0.0",
+      "dependencies": {
+        "@aidey/rate-limit": "workspace:*",
+      },
       "devDependencies": {
         "@aidey/tsconfig": "workspace:*",
+      },
+    },
+    "packages/rate-limit": {
+      "name": "@aidey/rate-limit",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@aidey/tsconfig": "workspace:*",
+        "hono": "^4.12.16",
+      },
+      "peerDependencies": {
+        "hono": "^4.0.0",
       },
     },
     "packages/tsconfig": {
@@ -227,6 +242,8 @@
     "@aidey/identity": ["@aidey/identity@workspace:packages/contexts/identity"],
 
     "@aidey/lightspeed": ["@aidey/lightspeed@workspace:packages/lightspeed"],
+
+    "@aidey/rate-limit": ["@aidey/rate-limit@workspace:packages/rate-limit"],
 
     "@aidey/search": ["@aidey/search@workspace:packages/contexts/search"],
 
