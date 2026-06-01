@@ -18,6 +18,7 @@ import { Route as appOnboardingRouteRouteImport } from './routes/(app)/onboardin
 import { Route as appOnboardingIndexRouteImport } from './routes/(app)/onboarding/index'
 import { Route as appDashboardIndexRouteImport } from './routes/(app)/dashboard/index'
 import { Route as appOnboardingSyncRouteImport } from './routes/(app)/onboarding/sync'
+import { Route as appOnboardingInstallRouteImport } from './routes/(app)/onboarding/install'
 import { Route as appDashboardSyncRouteImport } from './routes/(app)/dashboard/sync'
 import { Route as appDashboardSearchRouteImport } from './routes/(app)/dashboard/search'
 import { Route as appDashboardAlertsRouteImport } from './routes/(app)/dashboard/alerts'
@@ -66,6 +67,11 @@ const appOnboardingSyncRoute = appOnboardingSyncRouteImport.update({
   path: '/sync',
   getParentRoute: () => appOnboardingRouteRoute,
 } as any)
+const appOnboardingInstallRoute = appOnboardingInstallRouteImport.update({
+  id: '/install',
+  path: '/install',
+  getParentRoute: () => appOnboardingRouteRoute,
+} as any)
 const appDashboardSyncRoute = appDashboardSyncRouteImport.update({
   id: '/dashboard/sync',
   path: '/dashboard/sync',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
+  '/onboarding/install': typeof appOnboardingInstallRoute
   '/onboarding/sync': typeof appOnboardingSyncRoute
   '/dashboard/': typeof appDashboardIndexRoute
   '/onboarding/': typeof appOnboardingIndexRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/dashboard/alerts': typeof appDashboardAlertsRoute
   '/dashboard/search': typeof appDashboardSearchRoute
   '/dashboard/sync': typeof appDashboardSyncRoute
+  '/onboarding/install': typeof appOnboardingInstallRoute
   '/onboarding/sync': typeof appOnboardingSyncRoute
   '/dashboard': typeof appDashboardIndexRoute
   '/onboarding': typeof appOnboardingIndexRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/(app)/dashboard/alerts': typeof appDashboardAlertsRoute
   '/(app)/dashboard/search': typeof appDashboardSearchRoute
   '/(app)/dashboard/sync': typeof appDashboardSyncRoute
+  '/(app)/onboarding/install': typeof appOnboardingInstallRoute
   '/(app)/onboarding/sync': typeof appOnboardingSyncRoute
   '/(app)/dashboard/': typeof appDashboardIndexRoute
   '/(app)/onboarding/': typeof appOnboardingIndexRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/dashboard/alerts'
     | '/dashboard/search'
     | '/dashboard/sync'
+    | '/onboarding/install'
     | '/onboarding/sync'
     | '/dashboard/'
     | '/onboarding/'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
     | '/dashboard/alerts'
     | '/dashboard/search'
     | '/dashboard/sync'
+    | '/onboarding/install'
     | '/onboarding/sync'
     | '/dashboard'
     | '/onboarding'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/(app)/dashboard/alerts'
     | '/(app)/dashboard/search'
     | '/(app)/dashboard/sync'
+    | '/(app)/onboarding/install'
     | '/(app)/onboarding/sync'
     | '/(app)/dashboard/'
     | '/(app)/onboarding/'
@@ -237,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appOnboardingSyncRouteImport
       parentRoute: typeof appOnboardingRouteRoute
     }
+    '/(app)/onboarding/install': {
+      id: '/(app)/onboarding/install'
+      path: '/install'
+      fullPath: '/onboarding/install'
+      preLoaderRoute: typeof appOnboardingInstallRouteImport
+      parentRoute: typeof appOnboardingRouteRoute
+    }
     '/(app)/dashboard/sync': {
       id: '/(app)/dashboard/sync'
       path: '/dashboard/sync'
@@ -262,11 +281,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface appOnboardingRouteRouteChildren {
+  appOnboardingInstallRoute: typeof appOnboardingInstallRoute
   appOnboardingSyncRoute: typeof appOnboardingSyncRoute
   appOnboardingIndexRoute: typeof appOnboardingIndexRoute
 }
 
 const appOnboardingRouteRouteChildren: appOnboardingRouteRouteChildren = {
+  appOnboardingInstallRoute: appOnboardingInstallRoute,
   appOnboardingSyncRoute: appOnboardingSyncRoute,
   appOnboardingIndexRoute: appOnboardingIndexRoute,
 }
