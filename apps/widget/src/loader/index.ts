@@ -31,6 +31,15 @@ declare global {
     window.AIDEY_LOADED.add(addon);
     inject(`${cdn}/${addon}/widget.js`);
   }
+
+  // Signal to any embedding parent (e.g. the onboarding install-verification
+  // iframe) that the loader ran. The receiver MUST verify event.origin; we
+  // post with "*" because the loader has no knowledge of who's watching.
+  try {
+    window.parent?.postMessage({ type: "aidey:boot", addons }, "*");
+  } catch {
+    // window.parent inaccessible (sandboxed iframe) or postMessage blocked.
+  }
 })();
 
 function deriveCdnFromScript(script: HTMLScriptElement | null): string | null {

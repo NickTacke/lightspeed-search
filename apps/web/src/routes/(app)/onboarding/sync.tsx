@@ -98,7 +98,7 @@ function OnboardingSync() {
         ) : null}
         <div className="flex justify-end gap-2">
           {status === "success" ? (
-            <Button onClick={() => navigate({ to: "/dashboard" })}>Go to dashboard</Button>
+            <Button onClick={() => navigate({ to: "/onboarding/install" })}>Continue</Button>
           ) : status === "failure" ? (
             <Button variant="outline" onClick={() => navigate({ to: "/dashboard" })}>
               Skip to dashboard
