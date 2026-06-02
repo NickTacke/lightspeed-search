@@ -31,8 +31,30 @@ export interface FullSyncDeps {
   productRepo: ProductRepository;
   categoryRepo: CategoryRepository;
   variantRepo: VariantRepository;
+  /**
+   * Our partner-app API key (env LIGHTSPEED_APP_KEY). Used as the Basic-auth
+   * username for shops created via the install flow — only the manual-key
+   * flow uses per-shop apiKey/apiSecret.
+   */
+  appKey: string;
   lightspeedClientFactory?: (creds: LightspeedCredentials) => LightspeedClient;
   regenerateEmbedding?: (productId: ProductId) => Promise<RegenerateEmbeddingResult>;
+}
+
+/**
+ * Pick the right Basic-auth pair for the shop's install origin. Per
+ * https://developers.lightspeedhq.com/ecom/tutorials/installing-an-app/,
+ * partner-app installs authenticate as Basic(APP_KEY, userSecret); manual
+ * API-key installs use the per-shop (apiKey, apiSecret) generated in LS admin.
+ */
+function shopCredentials(shop: Shop, appKey: string): { apiKey: string; apiSecret: string } {
+  if (shop.installToken && shop.userSecret) {
+    return { apiKey: appKey, apiSecret: shop.userSecret };
+  }
+  if (shop.apiKey && shop.apiSecret) {
+    return { apiKey: shop.apiKey, apiSecret: shop.apiSecret };
+  }
+  throw new Error("shop has no Lightspeed credentials");
 }
 
 const PAGE_LIMIT = 250;
@@ -62,12 +84,13 @@ export async function fullSync(
   }
 
   try {
-    const apiKey = shop.installToken ?? shop.apiKey;
-    const apiSecret = shop.userSecret ?? shop.apiSecret;
-    if (!apiKey || !apiSecret) {
-      throw new Error("shop has no Lightspeed credentials");
-    }
-    const client = factory({ cluster: shop.cluster, apiKey, apiSecret });
+    const { apiKey, apiSecret } = shopCredentials(shop, deps.appKey);
+    const client = factory({
+      cluster: shop.cluster,
+      apiKey,
+      apiSecret,
+      language: shop.language,
+    });
 
     // 1. Categories first (products may reference them)
     const seenCategoryIds = new Set<string>();

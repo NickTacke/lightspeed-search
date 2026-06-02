@@ -116,6 +116,7 @@ describe("fullSync", () => {
         productRepo,
         categoryRepo,
         variantRepo,
+        appKey: "test-app-key",
         lightspeedClientFactory: () => client,
       },
       testShop,
@@ -152,6 +153,7 @@ describe("fullSync", () => {
         productRepo,
         categoryRepo,
         variantRepo,
+        appKey: "test-app-key",
         lightspeedClientFactory: () =>
           makeStubClient({
             products: [
@@ -175,6 +177,7 @@ describe("fullSync", () => {
         productRepo,
         categoryRepo,
         variantRepo,
+        appKey: "test-app-key",
         lightspeedClientFactory: () => makeStubClient({ products: [{ id: 1, title: "Keep" }] }),
       },
       testShop,
@@ -203,6 +206,7 @@ describe("fullSync", () => {
         productRepo,
         categoryRepo,
         variantRepo,
+        appKey: "test-app-key",
         lightspeedClientFactory: () => client,
       },
       testShop,
