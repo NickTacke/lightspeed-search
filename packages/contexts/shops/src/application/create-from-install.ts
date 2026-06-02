@@ -43,11 +43,15 @@ export async function createFromInstall(
   });
   const lsShop = await shopEndpoints.getShop(client);
 
+  // LS's /shop.json sometimes returns title null; always populate something
+  // so the dashboard never renders an empty heading.
+  const resolvedDomain = lsShop.domain || input.domain || String(lsShop.id);
+  const resolvedName = lsShop.title || resolvedDomain;
   return deps.repo.insertWithUserLink({
     userId: input.userId,
     lightspeedId: String(lsShop.id),
-    domain: lsShop.domain || input.domain,
-    name: lsShop.title ?? input.domain,
+    domain: resolvedDomain,
+    name: resolvedName,
     email: lsShop.email ?? null,
     language: lsShop.language || "en",
     cluster: input.cluster,

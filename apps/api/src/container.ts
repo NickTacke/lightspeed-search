@@ -147,6 +147,7 @@ export function createContainer(env: Env) {
     productRepo,
     categoryRepo,
     variantRepo,
+    appKey: env.LIGHTSPEED_APP_KEY,
     regenerateEmbedding: search.regenerate,
   };
 
