@@ -25,7 +25,6 @@ interface InstallCheckDto {
     | "storefront_unreachable"
     | "fetch_error";
   storefrontUrl?: string;
-  httpStatus?: number;
 }
 
 const LOADER_URL = import.meta.env.VITE_WIDGET_LOADER_URL as string | undefined;
@@ -197,8 +196,7 @@ function StatusBlock({ check }: { check: InstallCheckDto | undefined }) {
     return (
       <p className="flex items-center gap-2 text-sm text-amber-600">
         <AlertCircle className="size-4" />
-        Your storefront returned HTTP {check.httpStatus ?? "?"}. Check that it's online and publicly
-        reachable.
+        Couldn't reach your storefront. Check that it's online and publicly reachable.
       </p>
     );
   }
