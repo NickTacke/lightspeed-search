@@ -110,6 +110,76 @@ export function createShopRepository(db: Database) {
         return toShop(row);
       });
     },
+
+    /**
+     * Idempotent install: if a shop with this lightspeedId already exists,
+     * refresh its credentials + domain + clear any soft-delete, ensure the
+     * user_shops + widget_domains links exist, and return the row. Otherwise
+     * fall through to the standard insert. Lets a merchant re-install (or
+     * recover from a half-failed first attempt) without DELETEing rows by hand.
+     */
+    async upsertFromInstall(input: InsertShopWithUserLinkInput): Promise<Shop> {
+      return db.transaction(async (tx) => {
+        const [existing] = await tx
+          .select()
+          .from(schema.shops)
+          .where(eq(schema.shops.lightspeedId, input.lightspeedId))
+          .limit(1);
+
+        let row: ShopRow;
+        if (existing) {
+          const [updated] = await tx
+            .update(schema.shops)
+            .set({
+              domain: input.domain,
+              name: input.name,
+              email: input.email,
+              language: input.language,
+              cluster: input.cluster,
+              installToken: input.installToken,
+              userSecret: input.userSecret,
+              apiKey: input.apiKey,
+              apiSecret: input.apiSecret,
+              updatedAt: new Date(),
+              deletedAt: null,
+            })
+            .where(eq(schema.shops.id, existing.id))
+            .returning();
+          if (!updated) throw new Error("update shop failed");
+          row = updated;
+        } else {
+          const [inserted] = await tx
+            .insert(schema.shops)
+            .values({
+              lightspeedId: input.lightspeedId,
+              domain: input.domain,
+              name: input.name,
+              email: input.email,
+              language: input.language,
+              cluster: input.cluster,
+              installToken: input.installToken,
+              userSecret: input.userSecret,
+              apiKey: input.apiKey,
+              apiSecret: input.apiSecret,
+            })
+            .returning();
+          if (!inserted) throw new Error("insert shop failed");
+          row = inserted;
+        }
+
+        await tx
+          .insert(schema.userShops)
+          .values({ userId: input.userId, shopId: row.id, role: "owner" })
+          .onConflictDoNothing();
+
+        await tx
+          .insert(schema.widgetDomains)
+          .values({ shopId: row.id, domain: input.domain })
+          .onConflictDoNothing();
+
+        return toShop(row);
+      });
+    },
   };
 }
 
