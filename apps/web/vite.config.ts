@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
         "/sync": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/search": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/oauth": { target: `http://localhost:${apiPort}`, changeOrigin: true },
+        "/onboarding": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/health": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/auth": { target: `http://localhost:${apiPort}`, changeOrigin: true },
         "/widget": { target: `http://localhost:${apiPort}`, changeOrigin: true },
