@@ -43,17 +43,20 @@ export async function createFromInstall(
   });
   const lsShop = await shopEndpoints.getShop(client);
 
-  // LS's /shop.json sometimes returns title null; always populate something
-  // so the dashboard never renders an empty heading.
-  const resolvedDomain = lsShop.domain || input.domain || String(lsShop.id);
+  // /shop.json field naming: `mainDomain` is the storefront URL on current
+  // shops; older responses used `domain`. Title is rarely populated on this
+  // endpoint — fall back to the domain so the dashboard never renders blank.
+  const resolvedDomain = lsShop.mainDomain || lsShop.domain || input.domain || String(lsShop.id);
   const resolvedName = lsShop.title || resolvedDomain;
-  return deps.repo.insertWithUserLink({
+  // Idempotent insert so retrying a half-failed install doesn't 23505 on the
+  // unique lightspeed_id constraint — common during partner onboarding.
+  return deps.repo.upsertFromInstall({
     userId: input.userId,
     lightspeedId: String(lsShop.id),
     domain: resolvedDomain,
     name: resolvedName,
     email: lsShop.email ?? null,
-    language: lsShop.language || "en",
+    language: lsShop.language || input.language || "en",
     cluster: input.cluster,
     installToken: input.installToken,
     userSecret: input.userSecret,
