@@ -18,6 +18,11 @@ const envSchema = z.object({
   LIGHTSPEED_APP_KEY: z.string().default(""),
   LIGHTSPEED_APP_SECRET: z.string().default(""),
   OAUTH_STATE_SECRET: z.string().min(32).default("dev-oauth-state-secret-32-chars-replace"),
+  // Public URL of the widget loader bundle. The api uses this to detect
+  // whether the snippet is live on a merchant's storefront — fetches the
+  // shop HTML and grep's for this string. The web app reads it as
+  // VITE_WIDGET_LOADER_URL for the snippet display; keep both in sync.
+  WIDGET_LOADER_URL: z.string().default(""),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   LOG_LEVEL: z.enum(["trace", "debug", "info", "warn", "error", "fatal"]).default("info"),
   SENTRY_DSN_API: z.string().default(""),

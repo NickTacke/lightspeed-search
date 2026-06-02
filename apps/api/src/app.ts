@@ -8,6 +8,7 @@ import { authRoutes } from "./routes/auth.ts";
 import { healthRoute } from "./routes/health.ts";
 import { lightspeedRoutes } from "./routes/lightspeed.ts";
 import { oauthRoutes } from "./routes/oauth.ts";
+import { onboardingRoutes } from "./routes/onboarding.ts";
 import { searchRoutes } from "./routes/search.ts";
 import { shopRoutes } from "./routes/shops.ts";
 import { syncRoutes } from "./routes/sync.ts";
@@ -30,6 +31,7 @@ export function buildApp(container: Container) {
   app.use("/oauth/*", dashboardCors);
   app.use("/health/*", dashboardCors);
   app.use("/auth/*", dashboardCors);
+  app.use("/onboarding/*", dashboardCors);
   app.use("/widget/*", cors({ origin: "*", credentials: false }));
 
   app.route("/", healthRoute(container));
@@ -38,6 +40,7 @@ export function buildApp(container: Container) {
   app.route("/sync", syncRoutes(container));
   app.route("/search", searchRoutes(container));
   app.route("/oauth", oauthRoutes(container));
+  app.route("/onboarding", onboardingRoutes(container));
   app.route("/widget", widgetRoutes(container));
   app.route("/auth", authRoutes(container));
   app.route("/lightspeed", lightspeedRoutes(container));
