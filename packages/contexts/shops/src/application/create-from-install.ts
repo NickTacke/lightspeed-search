@@ -8,6 +8,7 @@ export interface CreateFromInstallDeps {
     cluster: ShopCluster;
     apiKey: string;
     apiSecret: string;
+    language?: string;
   }) => LightspeedClient;
 }
 
@@ -22,6 +23,8 @@ export interface CreateFromInstallInput {
   /** Per-shop secret, derived as md5(installToken + LIGHTSPEED_APP_SECRET). Used as Basic-auth password AND webhook HMAC key. */
   userSecret: string;
   cluster: ShopCluster;
+  /** Shop's storefront language (e.g. "nl"). LS requires this in the API URL path. */
+  language: string;
 }
 
 export async function createFromInstall(
@@ -36,6 +39,7 @@ export async function createFromInstall(
     cluster: input.cluster,
     apiKey: input.appKey,
     apiSecret: input.userSecret,
+    language: input.language,
   });
   const lsShop = await shopEndpoints.getShop(client);
 

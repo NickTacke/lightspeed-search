@@ -277,6 +277,10 @@ export function oauthRoutes(container: Container) {
       installToken: token,
       userSecret,
       cluster,
+      // LS encodes the shop's storefront language in the API URL path; pass it
+      // from the install callback so the first /shop.json call hits the right
+      // URL (e.g. /nl/shop.json for a Dutch storefront).
+      language,
     });
 
     // Best-effort: register webhooks now so sync works immediately. Failures logged, not fatal.
