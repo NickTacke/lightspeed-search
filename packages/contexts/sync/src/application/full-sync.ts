@@ -219,9 +219,18 @@ export async function fullSync(
   }
 }
 
-/** Parse Lightspeed's CSV tags into an array. */
-function parseTags(raw: string | undefined): string[] {
+/**
+ * Parse Lightspeed's product tags into an array. LS returns this as either
+ * a comma-separated string or a JSON array depending on the product/endpoint
+ * version — tolerate both rather than crashing the whole sync on the first
+ * shape mismatch.
+ */
+function parseTags(raw: string | string[] | null | undefined): string[] {
   if (!raw) return [];
+  if (Array.isArray(raw)) {
+    return raw.map((t) => String(t).trim()).filter(Boolean);
+  }
+  if (typeof raw !== "string") return [];
   return raw
     .split(",")
     .map((t) => t.trim())

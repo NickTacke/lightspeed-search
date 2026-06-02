@@ -19,7 +19,9 @@ export interface LightspeedProduct {
   oldPrice?: number;
   sku?: string;
   ean?: string;
-  tags?: string;
+  // LS returns this as a comma-separated string OR a JSON array depending
+  // on the endpoint version / specific product. Tolerate both upstream.
+  tags?: string | string[] | null;
   visibility?: string;
   sortOrder?: number;
   variants?: Array<LightspeedVariant>;
