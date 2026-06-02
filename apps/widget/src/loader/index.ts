@@ -12,6 +12,10 @@ declare global {
   }
 }
 
+// Baked in at build time by vite.config.loader.ts (defaults to prod api host).
+// Used when the snippet doesn't override via data-api-url.
+declare const __AIDEY_API_URL__: string;
+
 (function loader() {
   if (window.AIDEY_LOADED) return;
   window.AIDEY_LOADED = new Set();
@@ -19,7 +23,10 @@ declare global {
   const currentScript = document.currentScript as HTMLScriptElement | null;
   const dataset = currentScript?.dataset ?? {};
   const cdn = (dataset.cdn ?? deriveCdnFromScript(currentScript) ?? "/aidey").replace(/\/$/, "");
-  const apiUrl = (dataset.apiUrl ?? cdn).replace(/\/$/, "");
+  // The API host is distinct from the CDN host in prod (api.aidey.app vs
+  // cdn.aidey.app), so falling back to `cdn` would route /widget/* calls at
+  // the CDN and 404. Use the baked-in URL as the default.
+  const apiUrl = (dataset.apiUrl ?? __AIDEY_API_URL__).replace(/\/$/, "");
   window.AIDEY_API_URL = apiUrl;
 
   const addons = (dataset.addons ?? "alerts,search")
