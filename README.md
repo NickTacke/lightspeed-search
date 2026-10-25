@@ -1,6 +1,18 @@
-# aidey
+# lightspeed-search
 
-A Lightspeed e-commerce add-on: smart product search, storefront alerts, and an embeddable widget. Bun monorepo with end-to-end type safety from DB → API → web.
+AI product search, storefront alerts and an embeddable widget for [Lightspeed eCom](https://www.lightspeedhq.com/ecommerce/) webshops.
+
+A shop installs it through Lightspeed's app flow. It syncs the catalog, embeds every product, and replaces the storefront's search box with a hybrid keyword + semantic search, so a query like "warm jacket for hiking" finds products even when those exact words aren't in the title.
+
+> **Status:** built in May–June 2026 and tested end to end against a live Lightspeed shop (OAuth install, catalog sync, search, alerts). It's no longer in active development. The internal codename is `aidey`, which is why the packages are scoped `@aidey/*`.
+
+## What it does
+
+- **Hybrid search:** Postgres full-text ranking combined with pgvector cosine similarity, in a single query
+- **Catalog sync:** pulls products, categories and variants from Lightspeed on install, on a schedule and from webhooks
+- **Storefront alerts:** banners and notices that shop owners manage from the dashboard
+- **Embeddable widget:** a small loader script mounts the search and alert widgets on any Lightspeed theme
+- **Onboarding:** OAuth install with signature verification, plus a server-side check that the widget is actually live on the storefront
 
 ## Stack
 
@@ -35,7 +47,7 @@ The dev loop runs four watchers via [concurrently](https://github.com/open-cli-t
 ## Layout
 
 ```
-aidey/
+lightspeed-search/
 ├── apps/
 │   ├── api/                       Hono + zod-openapi
 │   ├── web/                       Vite + React + TanStack + Tailwind + shadcn
@@ -86,3 +98,7 @@ Per-app:
 ## CI
 
 GitHub Actions workflow at `.github/workflows/check.yml` runs `bun install`, `bun run db:migrate`, `bun run check`, and `bun run test` on every PR and push to main, with a Postgres + pgvector service.
+
+## License
+
+[MIT](LICENSE)
